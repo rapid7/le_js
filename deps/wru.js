@@ -153,7 +153,9 @@ var wru = function (window) {"use strict";
             process.exit(code);
         } catch(up) {
             // rhino
-            quit();
+//            quit();
+// no! we're using DynJS!
+          java.lang.System.exit(code);
         }
     }
 

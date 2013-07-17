@@ -51,14 +51,18 @@
   </target>
 
   <target name="test" depends="fetch-deps">
-    <mkdir dir="testbuild"/>
-    <concat destfile="${build}/le_test.js">
+    <mkdir dir="build"/>
+    <concat destfile="build/le_test.js">
+      <filelist dir="deps" files="wru.js"/>
+      <filelist dir="src" files="le.js"/>
+      <filelist dir="test" files="suite.js"/>
     </concat>
+
     <java classname="org.dynjs.cli.Main" fork="true">
       <classpath>
         <pathelement path="${lib}/*"/>
       </classpath>
-      <arg value="mock.js"/>
+      <arg value="build/le_test.js"/>
     </java>
   </target>
 </project>
