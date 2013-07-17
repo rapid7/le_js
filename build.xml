@@ -53,7 +53,7 @@
   <target name="test" depends="fetch-deps">
     <mkdir dir="build"/>
     <concat destfile="build/le_test.js">
-      <filelist dir="deps" files="wru.js"/>
+      <filelist dir="deps" files="wru.js,xhr.js"/>
       <filelist dir="src" files="le.js"/>
       <filelist dir="test" files="suite.js"/>
     </concat>
