@@ -65,4 +65,31 @@
       <arg value="build/le_test.js"/>
     </java>
   </target>
+
+  <path id="foo">
+    <pathelement path="${lib}/closure-compiler-v20130603.jar"/>
+    <pathelement path="${lib}/guava-14.0.1.jar"/>
+    <pathelement path="${lib}/args4j-2.0.16.jar"/>
+    <pathelement path="${lib}/jackson-core-asl-1.9.9.jar"/>
+    <pathelement path="${lib}/json-20090211.jar"/>
+  </path>
+
+  <target name="build" depends="test">
+    <taskdef name="jscomp"
+             classname="com.google.javascript.jscomp.ant.CompileTask"
+             classpathref="foo"/>
+
+    <mkdir dir="build"/>
+    
+    <jscomp compilationLevel="simple" warning="verbose" 
+            debug="false" output="build/le.min.js">
+
+      <externs dir="deps">
+        <file name="console-extern.js"/>
+      </externs>
+      <sources dir="src">
+        <file name="le.js"/>
+      </sources>
+    </jscomp>
+  </target>
 </project>

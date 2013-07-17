@@ -1,18 +1,23 @@
+/**
+ * A single log event stream.
+ * @constructor
+ * @param {Object} options
+ */
 function LogInput(options) {
 
-  _token = options.token;
-  _that = this;
+  var _token = options.token;
+  var _that = this;
   // flag to prevent further invocations on network err
-  _shouldCall = true;
+  var _shouldCall = true;
 
-  _serialize = function(obj) {
+  var _serialize = function(obj) {
     var str = [];
     for(var p in obj)
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     return str.join("&");
   }
 
-  _rawLog = function() {
+  var _rawLog = function() {
     var payload = {};
     if (arguments.length === 1) {
       var raw = arguments[0];
@@ -23,8 +28,8 @@ function LogInput(options) {
     } else {
       // Handle a variadic string overload,
       // e.g. _rawLog("some text ", x, " ...", 1);
-      interpolated = Array.prototype.slice.call(arguments);
-      payload = {event: interpolated};
+      var interpolated = Array.prototype.slice.call(arguments);
+      var payload = {event: interpolated};
     }
     _apiCall(_token, _serialize(payload));
   }
@@ -34,12 +39,12 @@ function LogInput(options) {
   this.warn = _rawLog;
   this.error = _rawLog;
 
-  _apiCall = function(token, data) {
+  var _apiCall = function(token, data) {
 
-    _endpoint = "http://localhost:8080/";
+    var _endpoint = "http://localhost:8080/";
 
     // Obtain a browser-specific XHR object
-    _getAjaxObject = function() {
+    var _getAjaxObject = function() {
       if (window.ActiveXObject) {
         window.XMLHttpRequest = function() {
           // IE6 compat
@@ -49,7 +54,7 @@ function LogInput(options) {
       return new XMLHttpRequest();
     }
 
-    request = _getAjaxObject();
+    var request = _getAjaxObject();
 
     if (request && _shouldCall) {
       request.onreadystatechange = function() {
