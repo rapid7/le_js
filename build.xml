@@ -1,0 +1,64 @@
+<project name="le_js" default="build" basedir="."
+         xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+    Official Logentries JavaScript client
+  </description>
+
+  <property name="src"  location="src"/>
+  <property name="lib"  location="lib"/>
+
+  <property name="ivy.install.version" value="2.1.0-rc2" />
+  <condition property="ivy.home" value="${env.IVY_HOME}">
+    <isset property="env.IVY_HOME" />
+  </condition>
+  <property name="ivy.home" value="${user.home}/.ant" />
+  <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+  <path id="build-classpath" description="The default classpath.">
+    <fileset dir="${lib}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="download-ivy" unless="offline">
+    <!-- Let's grab Ivy now if it's not installed -->
+    <mkdir dir="${ivy.jar.dir}"/>
+    <get
+        src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" 
+        dest="${ivy.jar.file}" usetimestamp="true"/>
+  </target>
+
+  <target name="init-ivy" depends="download-ivy">
+    <!-- try to load ivy here from ivy home, in case the user has
+         not already dropped it into ant's lib dir (note that the
+         latter copy will always take precedence).
+         We will not fail as long as local lib dir exists (it may
+         be empty) and ivy is in at least one of ant's lib dir or the
+         local lib dir. -->
+    <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml"
+             uri="antlib:org.apache.ivy.ant"
+             classpathref="ivy.lib.path"/>
+  </target>
+
+  <target name="fetch-deps" depends="init-ivy">
+    <mkdir dir="${lib}"/>
+    <!-- Retrieves all dependencies from m2 repo -->
+    <ivy:retrieve />
+  </target>
+
+  <target name="test" depends="fetch-deps">
+    <mkdir dir="testbuild"/>
+    <concat destfile="${build}/le_test.js">
+    </concat>
+    <java classname="org.dynjs.cli.Main" fork="true">
+      <classpath>
+        <pathelement path="${lib}/*"/>
+      </classpath>
+      <arg value="mock.js"/>
+    </java>
+  </target>
+</project>

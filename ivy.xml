@@ -1,0 +1,6 @@
+<ivy-module version="2.0">
+    <info organisation="com.logentries" module="le_js"/>
+    <dependencies>
+      <dependency org="org.dynjs" name="dynjs" rev="0.1.1" />
+    </dependencies>
+</ivy-module>
