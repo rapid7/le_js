@@ -18,3 +18,4 @@ XMLHttpRequest = function() {
 XMLHttpRequest.spy = function() {};
 
 window.XMLHttpRequest = XMLHttpRequest;
+

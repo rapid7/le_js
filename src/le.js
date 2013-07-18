@@ -31,6 +31,7 @@ function LogInput(options) {
   var _that = this;
   // flag to prevent further invocations on network err
   var _shouldCall = true;
+  var _SSL = options.ssl || false;
 
   var _serialize = function(obj) {
     var str = [];
@@ -63,7 +64,8 @@ function LogInput(options) {
 
   var _getWSObject = function() {
     if (typeof WebSocket !== "undefined") {
-      var ws = new WebSocket("ws://" + _endpoint + "/");
+      var scheme = (_SSL ? "wss://" : "ws://") + _endpoint + "/";
+      var ws = new WebSocket(scheme);
       // To prevent state exceptions, (i.e. when the JS interpreter
       // evaluates log() calls before we're connected), we
       // put messages waiting to be sent in a backlog.
@@ -108,26 +110,27 @@ function LogInput(options) {
     var request = _wsObject ? _wsObject : _getAjaxObject();
 
     if (_shouldCall) {
-      if (request instanceof WebSocket) {
-        if (request.readyState == 1)
-          request.send(data);
-        else
-          request.backlog.unshift(data);
-      } else if (request instanceof XMLHttpRequest) {
+      if (request instanceof XMLHttpRequest) {
         // Couldn't obtain a web socket, fall
         // back to AJAX POST
         request.onreadystatechange = function() {
           if (request.readyState === 4 && request.status === 400)
             console.warn("Couldn't submit events. Is your token valid?");
         }
-        request.open("POST", "http://" + _endpoint + "/", true);
+        var uri = (_SSL ? "https://" : "http://") + _endpoint + "/";
+        request.open("POST", uri, true);
         request.setRequestHeader('X-LE-Token', token);
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(data);
+      } else {
+        // Using WebSocket
+        if (request.readyState == 1)
+          request.send(data);
+        else
+          request.backlog.unshift(data);
       }
-    } else
-      return false;
+    }
   }
 };
 
