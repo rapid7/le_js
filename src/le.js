@@ -1,3 +1,7 @@
+/**
+* @license Copyright 2013 Logentries.
+* Please view license at https://raw.github.com/logentries/le_js/master/LICENSE
+*/
 var LE = {};
 
 LE.init = function(options) {
