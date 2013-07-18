@@ -72,10 +72,19 @@ function LogInput(options) {
 
 var LE = {
   init: function(options) {
-    if (options.token === undefined)
+    if (options.token === undefined) {
       throw new Error("Token not present.");
-    else
+      return false;
+    } else
       return new LogInput(options);
+  },
+  global_handler: function(logInput) {
+    var oldHandler = window.onerror;
+    var newHandler = function(msg, url, line) {
+      logInput.log({err: msg, l: line, u: url});
+      oldHandler(msg, url, line);
+    }
+    window.onerror = newHandler;
   }
 };
 

@@ -34,5 +34,20 @@ wru.test([
       le = LE.init({token:'foo'});
       le.log({"Hello": "world!"});
     }
+  },
+  {
+    name: 'init cannot work without token',
+    test: function() {
+      var didFail = false;
+      try {
+        le = LE.init({});
+      } catch (err) {
+        wru.assert(err.message === "Token not present.");
+        wru.assert(false, le);
+        didFail = true;
+      }
+
+      wru.assert(true, didFail);
+    }
   }
 ]);

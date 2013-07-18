@@ -1,16 +1,17 @@
 <html lang="en">
   <head>
     <title>test</title>
-    <script src="../build/le.js"></script>
+    <script src="../src/le.js"></script>
     <script>
       var le = LE.init({'token': 'YOUR-TOKEN'});
-      window.onerror = function(err
+      LE.global_handler(le);
     </script>
   </head>
 
   <body>
     <script>
-      le.log({foo: 1337, bar: "hello"});
+//      le.log({foo: 1337, bar: "hello"});
+      foo();
     </script>
   </body>
 </html>
