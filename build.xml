@@ -91,5 +91,7 @@
         <file name="le.js"/>
       </sources>
     </jscomp>
+
+    <copy file="src/le.js" todir="build"/>
   </target>
 </project>
