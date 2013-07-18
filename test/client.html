@@ -3,15 +3,12 @@
     <title>test</title>
     <script src="../src/le.js"></script>
     <script>
-      var le = LE.init({'token': 'YOUR-TOKEN'});
-      LE.global_handler(le);
+      var le = LE.init({'token': 'INVALID'});
+      le.log("hi");
+            le.log("there");
     </script>
   </head>
 
   <body>
-    <script>
-//      le.log({foo: 1337, bar: "hello"});
-      foo();
-    </script>
   </body>
 </html>
