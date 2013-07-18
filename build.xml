@@ -57,7 +57,7 @@
       <filelist dir="test" files="suite.js"/>
     </concat>
 
-    <java classname="org.dynjs.cli.Main" fork="true">
+    <java classname="org.dynjs.cli.Main" fork="true" failonerror="true">
       <classpath>
         <pathelement path="${lib}/*"/>
       </classpath>
