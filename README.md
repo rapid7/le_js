@@ -16,7 +16,7 @@ le.js allows your desktop & mobile web apps to submit logging events to Logentri
 Usage
 -----
 
-* Get the latest library build [here](https://github.com/logentries/le_js/releases/download/v0.1/le.min.js) or download a [full release](https://github.com/logentries/le_js/releases).
+* Get the latest build [here](https://github.com/logentries/le_js/releases/download/v0.1/le.min.js) or download a [full release](https://github.com/logentries/le_js/releases).
 
 * Include the library in your page:
 
@@ -35,5 +35,12 @@ Usage
   ...
 
 ```
+Want to send all exceptions to Logentries?
 
-Get a free [account](https://logentries.com/quick-start/) if you don't already have one.
+```javascript
+LE.global_handler(stream);
+```
+
+sets a `window.onerror` callback for the given stream, invoking the current handler too if it exists.
+
+Need a token? Get a free [account](https://logentries.com/quick-start/) if you don't already have one.
