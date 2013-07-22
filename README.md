@@ -3,6 +3,8 @@ le.js
 
 Client-side JavaScript library for [Logentries](http://www.logentries.com).
 
+[![Build Status](https://travis-ci.org/logentries/le_js.png?branch=master)](https://travis-ci.org/logentries/le_js)
+
 Features
 --------
 
