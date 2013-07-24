@@ -5,7 +5,15 @@
 var LE = {};
 
 LE.init = function(options) {
-  if (options.token === undefined) {
+  var dict = {};
+  if (typeof options === "string")
+    dict.token = options;
+  else if (typeof options === "object")
+    dict = options;
+
+  dict.ssl = false;
+
+  if (dict.token === undefined) {
     throw new Error("Token not present.");
   } else
     return new LogInput(options);
@@ -35,7 +43,7 @@ function LogInput(options) {
   var _that = this;
   // flag to prevent further invocations on network err
   var _shouldCall = true;
-  var _SSL = options.ssl || false;
+  var _SSL = options.ssl;
 
   var _serialize = function(obj) {
     var str = [];

@@ -1,6 +1,12 @@
 wru.test([
   {
-    name: 'basic stream construction',
+    name: 'single arg stream construction',
+    test: function() {
+      wru.assert(true, LE.init('TOKEN') !== undefined);
+    }
+  },
+  {
+    name: 'basic stream construction with dict',
     test: function() {
       wru.assert(true, LE.init({token: 'foo'}) !== undefined);
     }

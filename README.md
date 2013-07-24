@@ -8,12 +8,10 @@ Client-side JavaScript library for [Logentries](http://www.logentries.com).
 Features
 --------
 
-* Small- ~1.6k (minified)
+* Small: ~1.6k (minified)
 * Cross-browser compatible
 * No external dependencies
 * Simple API
-
-le.js allows your desktop & mobile web apps to submit logging events to Logentries.
 
 Usage
 -----
