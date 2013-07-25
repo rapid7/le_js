@@ -8,7 +8,7 @@ Client-side JavaScript library for [Logentries](http://www.logentries.com).
 Features
 --------
 
-* Small: ~1.6k (minified)
+* Small: ~2k (minified)
 * Cross-browser compatible
 * No external dependencies
 * Simple API
