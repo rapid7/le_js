@@ -85,7 +85,8 @@
     <mkdir dir="build"/>
     
     <jscomp compilationLevel="simple" warning="verbose" 
-            debug="false" output="build/le.min.js">
+            debug="false" output="build/le.min.js"
+            languageIn="ECMASCRIPT5_STRICT">
 
       <externs dir="deps">
         <file name="console-extern.js"/>

@@ -4,6 +4,7 @@
 */
 
 var LE = (function(window) {
+  "use strict";
 
   /**
    * A single log event stream.
