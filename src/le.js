@@ -76,7 +76,7 @@ var LE = (function(window) {
           // Do all WS-capable browsers provide a CloseEvent contract?
           // If not, we need a type check.
           if (e.code >= 400) {
-            console.warn(e.reason);
+            console.warn(e);
             _shouldCall = false;
           }
         }
