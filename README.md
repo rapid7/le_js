@@ -5,6 +5,8 @@ Client-side JavaScript library for [Logentries](http://www.logentries.com).
 
 [![Build Status](https://travis-ci.org/logentries/le_js.png?branch=master)](https://travis-ci.org/logentries/le_js)
 
+Want to get under the hood? Check out the [wiki](https://github.com/logentries/le_js/wiki)
+
 Features
 --------
 
