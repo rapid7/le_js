@@ -17,8 +17,8 @@ wru.test([
       XMLHttpRequest.spy = function(data) {
         wru.assert(true, data === "event=Hello%2C%20world!");
       }
-      le = LE.init({token:'foo'});
-      le.log("Hello, world!");
+      LE.init({token:'foo'});
+      LE.log("Hello, world!");
     }
   },
   {
@@ -27,8 +27,8 @@ wru.test([
       XMLHttpRequest.spy = function(data) {
         wru.assert(true, data === "event=Hello%2C%20%2C1%2C%20more...");
       }
-      le = LE.init({token:'foo'});
-      le.log("Hello, ", 1, " more...");
+      LE.init({token:'foo'});
+      LE.log("Hello, ", 1, " more...");
     }
   },
   {
@@ -37,8 +37,8 @@ wru.test([
       XMLHttpRequest.spy = function(data) {
         wru.assert(true, data === "Hello=world!");
       }
-      le = LE.init({token:'foo'});
-      le.log({"Hello": "world!"});
+      LE.init({token:'foo'});
+      LE.log({"Hello": "world!"});
     }
   },
   {
@@ -46,10 +46,10 @@ wru.test([
     test: function() {
       var didFail = false;
       try {
-        le = LE.init({});
+        var le = LE.init();
       } catch (err) {
         wru.assert(err.message === "Token not present.");
-        wru.assert(false, le);
+        wru.assert(true, le === undefined);
         didFail = true;
       }
 

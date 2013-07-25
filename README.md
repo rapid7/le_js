@@ -27,18 +27,18 @@ Usage
     <script src="/js/le.min.js"></script>
     <script>
       // Create a log stream...
-      var stream = LE.init({token: 'YOUR-TOKEN'});
+      LE.init('YOUR-TOKEN');
       // ...and log some events!
-      stream.log("Hello, logger!");
+      LE.log("Hello, logger!");
     </script>
   </head>
   ...
 
 ```
-Want to send all exceptions to Logentries?
+Want to send all browser exceptions to Logentries? Initialize the logger with an object:
 
 ```javascript
-LE.global_handler(stream);
+LE.init({token: 'YOUR-TOKEN', onerror: true});
 ```
 
 sets a `window.onerror` callback for the given stream, invoking the current handler too if it exists.

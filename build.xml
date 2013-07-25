@@ -93,7 +93,7 @@
       <sources dir="src">
         <file name="le.js"/>
       </sources>
-      <define name="LE.ENDPOINT" value="production.example.com"/>
+      <define name="LE.ENDPOINT" value="js.logentries.com"/>
     </jscomp>
   </target>
 </project>
