@@ -17,7 +17,7 @@ var LE = (function(window) {
     /**
      * @const
      * @type {string} */
-    var _endpoint = "localhost:8080";
+    var _endpoint = "js.logentries.com";
 
     /**
      * Flag to prevent further invocations on network err
