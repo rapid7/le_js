@@ -69,12 +69,8 @@ var LE = (function(window) {
 
     var _getWSObject = function() {
       if (typeof WebSocket !== "undefined") {
-        var scheme = (_SSL ? "wss://" : "ws://") + _endpoint + "/";
+        var scheme = (_SSL ? "wss://" : "ws://") + _endpoint + "/logs" + _token;
         var ws = new WebSocket(scheme);
-        // To prevent state exceptions, (i.e. when the JS interpreter
-        // evaluates log() calls before we're connected), we
-        // put messages waiting to be sent in a backlog.
-        // This gets drained when onopen is invoked.
         ws.onclose = function(e) {
           // Do all WS-capable browsers provide a CloseEvent contract?
           // If not, we need a type check.
@@ -84,11 +80,7 @@ var LE = (function(window) {
           }
         }
         ws.onopen = function() {
-          // WebSocket impl doesn't allow us to supply
-          // the X-LE-Token header during handshake,
-          // so we send it now.
-          ws.send(_token);
-          // Then empty our backlog
+          // Empty our backlog
           while (!_backlog.length == 0)
             ws.send(_backlog.pop());
         }
@@ -126,9 +118,8 @@ var LE = (function(window) {
             if (request.readyState === 4 && request.status === 400)
               console.warn("Couldn't submit events. Is your token valid?");
           }
-          var uri = (_SSL ? "https://" : "http://") + _endpoint + "/";
+          var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
           request.open("POST", uri, true);
-          request.setRequestHeader('X-LE-Token', token);
           request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
           request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
           request.send(data);
