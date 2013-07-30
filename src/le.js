@@ -51,17 +51,17 @@ var LE = (function(window) {
       if (arguments.length === 1) {
         var raw = arguments[0];
         if (typeof raw === "string") {
-          payload = {event: raw};
-        } else if (typeof raw === "object")
           payload = raw;
+        } else if (typeof raw === "object")
+          payload = _serialize(raw);
       } else {
         // Handle a variadic string overload,
         // e.g. _rawLog("some text ", x, " ...", 1);
         var interpolated = Array.prototype.slice.call(arguments);
-        payload = {event: interpolated};
+        payload = interpolated;
       }
 
-      _apiCall(_token, _serialize(payload));
+      _apiCall(_token, payload);
     }
 
     /** @expose */
