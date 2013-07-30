@@ -40,7 +40,7 @@ var LE = (function(window) {
     var _serialize = function(obj) {
       var str = [];
       for(var p in obj)
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        str.push(p + "=" + obj[p]);
       return str.join("&");
     }
 
