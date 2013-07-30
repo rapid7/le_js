@@ -18,7 +18,7 @@ Features
 Usage
 -----
 
-* Get the latest build [here](https://github.com/logentries/le_js/releases/download/v0.1/le.min.js) or download a [full release](https://github.com/logentries/le_js/releases).
+* Get the latest build [here](https://github.com/logentries/le_js/releases/download/v0.0.2/le.min.js) or download a [source release](https://github.com/logentries/le_js/releases).
 
 * Include the library in your page:
 
