@@ -67,30 +67,6 @@ var LE = (function(window) {
     /** @expose */
     this.log = _rawLog;
 
-    var _getWSObject = function() {
-      if (typeof WebSocket !== "undefined") {
-        var scheme = (_SSL ? "wss://" : "ws://") + _endpoint + "/logs" + _token;
-        var ws = new WebSocket(scheme);
-        ws.onclose = function(e) {
-          // Do all WS-capable browsers provide a CloseEvent contract?
-          // If not, we need a type check.
-          if (e.code >= 400) {
-            console.warn(e);
-            _shouldCall = false;
-          }
-        }
-        ws.onopen = function() {
-          // Empty our backlog
-          while (!_backlog.length == 0)
-            ws.send(_backlog.pop());
-        }
-        return ws;
-      }
-      return false;
-    }
-
-    var _wsObject;
-
     var _apiCall = function(token, data) {
 
       // Obtain a browser-specific XHR object
@@ -104,11 +80,7 @@ var LE = (function(window) {
         return new XMLHttpRequest();
       }
 
-      // Attempt to establish a WS connection if
-      // we don't already have one
-      if (typeof _wsObject === "undefined") _wsObject = _getWSObject();
-
-      var request = _wsObject ? _wsObject : _getAjaxObject();
+      var request = _getAjaxObject();
 
       if (_shouldCall) {
         if (request instanceof XMLHttpRequest) {
