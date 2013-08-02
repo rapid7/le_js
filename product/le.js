@@ -83,25 +83,17 @@ var LE = (function(window) {
       var request = _getAjaxObject();
 
       if (_shouldCall) {
-        if (request instanceof XMLHttpRequest) {
-          // Couldn't obtain a web socket, fall
-          // back to AJAX POST
-          request.onreadystatechange = function() {
-            if (request.readyState === 4 && request.status === 400)
-              console.warn("Couldn't submit events. Is your token valid?");
-          }
-          var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
-          request.open("POST", uri, true);
-          request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-          request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-          request.send(data);
-        } else {
-          // Using WebSocket
-          if (request.readyState == 1)
-            request.send(data);
-          else
-            _backlog.unshift(data);
+        // Couldn't obtain a web socket, fall
+        // back to AJAX POST
+        request.onreadystatechange = function() {
+          if (request.readyState === 4 && request.status === 400)
+            console.warn("Couldn't submit events. Is your token valid?");
         }
+        var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
+        request.open("POST", uri, true);
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send(data);
       }
     }
   }
