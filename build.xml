@@ -116,12 +116,19 @@
     </copy>
 
     <exec executable="git">
-      <arg line="clone http://github.com/m0wfo/dyn.xhr.git deps/dyn.xhr"/>
+      <arg line="submodule init"/>
+    </exec>
+    <exec executable="git">
+      <arg line="submodule update"/>
+    </exec>
+    <exec executable="git">
+      <arg line="submodule foreach git pull origin master"/>
     </exec>
 
     <concat destfile="product/le.dyn.js">
-      <filelist dir="deps/dyn.xhr" files="dyn.xhr.js"/>
+      <filelist dir="dyn.xhr" files="dyn.xhr.js"/>
       <filelist dir="product" files="le.js"/>
+      <filelist dir="deps" files="common.js"/>
     </concat>
   </target>
 </project>

@@ -16,7 +16,8 @@ var XMLHttpRequest = function() {
   this.open = function(method, url, async) {
     _method = method;
     var uri = new java.net.URI(url);
-    _address = new java.net.InetSocketAddress(uri.getHost(), uri.getPort());
+    var port = (uri.getPort() === -1 ? 80 : uri.getPort());
+    _address = new java.net.InetSocketAddress(uri.getHost(), port);
     _path = uri.getPath();
   }
 
@@ -214,3 +215,4 @@ var LE = (function(window) {
     log: _log
   };
 } (this));
+module.exports = LE;
