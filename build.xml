@@ -114,5 +114,14 @@
     <copy todir="product">
       <fileset dir="build"/>
     </copy>
+
+    <exec executable="git">
+      <arg line="clone http://github.com/m0wfo/dyn.xhr.git deps/dyn.xhr"/>
+    </exec>
+
+    <concat destfile="product/le.dyn.js">
+      <filelist dir="deps/dyn.xhr" files="dyn.xhr.js"/>
+      <filelist dir="product" files="le.js"/>
+    </concat>
   </target>
 </project>
