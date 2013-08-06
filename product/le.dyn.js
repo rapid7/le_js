@@ -184,10 +184,10 @@ var LE = (function(window) {
 
   var _init = function(options) {
     var dict = {};
-    if (typeof options === "string")
-      dict.token = options;
-    else if (typeof options === "object")
+    if (typeof options === "object")
       dict = options;
+    else if (typeof options === "string")
+      dict.token = options;
 
     // Disable for now
     dict.ssl = false;
@@ -197,7 +197,7 @@ var LE = (function(window) {
     if (dict.token === undefined) {
       throw new Error("Token not present.");
     } else {
-      logger = new LogStream(options);
+      logger = new LogStream(dict);
     }
 
     return true;

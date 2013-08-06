@@ -2,13 +2,13 @@ wru.test([
   {
     name: 'single arg stream construction',
     test: function() {
-      wru.assert(true, LE.init('TOKEN') !== undefined);
+      wru.assert(true, LE.init('TOKEN'));
     }
   },
   {
     name: 'basic stream construction with dict',
     test: function() {
-      wru.assert(true, LE.init({token: 'foo'}) !== undefined);
+      wru.assert(true, LE.init({token: 'foo'}));
     }
   },
   {
@@ -25,7 +25,6 @@ wru.test([
     name: 'submit interpolated string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        print(data)
         wru.assert(true, data == "Hello, ,1, more...");
       }
       LE.init({token:'foo'});
