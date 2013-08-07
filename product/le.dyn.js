@@ -183,14 +183,12 @@ var LE = (function(window) {
   var logger;
 
   var _init = function(options) {
-    var dict = {};
+    var dict = {ssl: true};
     if (typeof options === "object")
-      dict = options;
+      for (var k in options)
+        dict[k] = options[k];
     else if (typeof options === "string")
       dict.token = options;
-
-    // Disable for now
-    dict.ssl = false;
 
     dict.onerror = dict.onerror || false;
 
