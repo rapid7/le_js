@@ -83,8 +83,6 @@ var LE = (function(window) {
       var request = _getAjaxObject();
 
       if (_shouldCall) {
-        // Couldn't obtain a web socket, fall
-        // back to AJAX POST
         request.onreadystatechange = function() {
           if (request.readyState === 4 && request.status === 400)
             console.warn("Couldn't submit events. Is your token valid?");
