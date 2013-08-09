@@ -37,12 +37,7 @@ Usage
   ...
 
 ```
-Want to send all browser exceptions to Logentries? Initialize the logger with an object:
 
-```javascript
-LE.init({token: 'YOUR-TOKEN', onerror: true});
-```
+Check out the [API](https://github.com/logentries/le_js/wiki/API) for more details.
 
-sets a `window.onerror` callback for the given stream, invoking the current handler too if it exists.
-
-Need a token? Get a free [account](https://logentries.com/quick-start/) if you don't already have one.
+Need a token? Get a [free account](https://logentries.com/quick-start/) if you don't already have one.
