@@ -25,10 +25,20 @@ wru.test([
     name: 'submit interpolated string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data == "Hello, ,1, more...");
+        wru.assert(true, data === "Hello, 1 more...");
       }
       LE.init({token:'foo'});
-      LE.log("Hello, ", 1, " more...");
+      LE.log("Hello,", 1, "more...");
+    }
+  },
+  {
+    name: 'submit array of strings',
+    test: function() {
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data === "Hello, logger");
+      }
+      LE.init({token:'foo'});
+      LE.log("Hello,", "logger");
     }
   },
   {

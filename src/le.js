@@ -6,14 +6,16 @@
 var LE = (function(window) {
   "use strict";
 
-  var tracecode = (Math.random()+Math.PI).toString(36).substring( 2,10);
-
   /**
    * A single log event stream.
    * @constructor
    * @param {Object} options
    */
   function LogStream(options) {
+    /**
+     * @const
+     * @type {string} */
+    var _tracecode = (Math.random() + Math.PI).toString(36).substring(2,10);
     /** @type {string} */
     var _token = options.token;
     /**
@@ -29,6 +31,8 @@ var LE = (function(window) {
     var _SSL = options.ssl;
     /** @type {Array.<string>} */
     var _backlog = [];
+    /** @type {boolean} */
+    var _active = false;
 
     if (options.onerror) {
       var oldHandler = window.onerror;
@@ -57,19 +61,24 @@ var LE = (function(window) {
         } else if (typeof raw === "object")
           payload = _serialize(raw);
       } else {
-        // Handle a variadic string overload,
+        // Handle a variadic overload,
         // e.g. _rawLog("some text ", x, " ...", 1);
         var interpolated = Array.prototype.slice.call(arguments);
-        payload = interpolated;
+        payload = interpolated.join(" ");
       }
 
-      _apiCall(_token, payload);
+      if (_active) {
+        _backlog.push(payload);
+      } else {
+        _apiCall(_token, payload);
+      }
     }
 
     /** @expose */
     this.log = _rawLog;
 
     var _apiCall = function(token, data) {
+      _active = true;
 
       // Obtain a browser-specific XHR object
       var _getAjaxObject = function() {
@@ -86,8 +95,19 @@ var LE = (function(window) {
 
       if (_shouldCall) {
         request.onreadystatechange = function() {
-          if (request.readyState === 4 && request.status === 400)
-            console.warn("Couldn't submit events. Is your token valid?");
+          if (request.readyState === 4) {
+            if (request.status >= 400) {
+              console.warn("Couldn't submit events.");
+            } else {
+              if (_backlog.length > 0) {
+                // Submit the next event in the backlog
+                _apiCall(token, _backlog.shift());
+              } else {
+                _active = false;
+              }
+            }
+          }
+            
         }
         var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
         request.open("POST", uri, true);
