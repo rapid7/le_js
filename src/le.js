@@ -31,7 +31,7 @@ var LE = (function(window) {
     if (options.onerror) {
       var oldHandler = window.onerror;
       var newHandler = function(msg, url, line) {
-        _rawLog({err: msg, l: line, u: url});
+        _rawLog({error: msg, line: line, url: url});
         if (oldHandler) oldHandler(msg, url, line);
       }
       window.onerror = newHandler;
