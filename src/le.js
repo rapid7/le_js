@@ -16,6 +16,8 @@ var LE = (function(window) {
      * @const
      * @type {string} */
     var _tracecode = (Math.random() + Math.PI).toString(36).substring(2,10);
+    /** @type {boolean} */
+    var _doTrace = options.tracecode;
     /** @type {string} */
     var _token = options.token;
     /**
@@ -128,7 +130,7 @@ var LE = (function(window) {
     else if (typeof options === "string")
       dict.token = options;
 
-    dict.onerror = dict.onerror || false;
+    dict.catchall = dict.catchall || false;
     dict.trace = dict.trace || false;
 
     if (dict.token === undefined) {
