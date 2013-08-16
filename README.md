@@ -41,3 +41,4 @@ Usage
 Check out the [API](https://github.com/logentries/le_js/wiki/API) for more details.
 
 Need a token? Get a [free account](https://logentries.com/quick-start/) if you don't already have one.
+

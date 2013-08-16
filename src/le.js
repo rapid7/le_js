@@ -6,6 +6,8 @@
 var LE = (function(window) {
   "use strict";
 
+  var tracecode = (Math.random()+Math.PI).toString(36).substring( 2,10);
+
   /**
    * A single log event stream.
    * @constructor
@@ -107,6 +109,7 @@ var LE = (function(window) {
       dict.token = options;
 
     dict.onerror = dict.onerror || false;
+    dict.trace = dict.trace || false;
 
     if (dict.token === undefined) {
       throw new Error("Token not present.");

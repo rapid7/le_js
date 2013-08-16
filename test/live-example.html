@@ -1,0 +1,99 @@
+<html lang="en">
+  <head>
+    <title>test</title>
+    <script src="../product/le.js"></script>
+    <script>
+      LE.init({
+	token: 'YOUR_TOKEN', // CHANGEME
+	onerror: true, // log_errors FIXME
+	tracecode: true, // FIXME
+	page_info: 'per-page' // 'per-entry', 'none' // FIXME
+	});
+    </script>
+  </head>
+
+<body>
+
+<script>
+LE.log( '--- Start');
+LE.log( 'Simple message');
+
+// FIXME - serialization?
+
+// FIXME
+LE.log( 'Multiple messages', 'Second message', 'Third message');
+
+/*
+Logging flat objects.
+
+Flat objects are serialized in the form of field=value.
+*/
+LE.log( {
+	event: 'Logging JS object',
+	integer_field: 100,
+	float_field: 3.14,
+	string_field: 'some text'
+});
+
+/*
+Logging combined messages.
+FIXME
+*/
+LE.log( 'jserror', {
+	first: 'a',
+	second: 'b'
+});
+
+/*
+Logging objects with complex fields.
+
+Sub-fields are encoded in the form of field.subfield
+Arrays are encoded in the form of field.0, field.1, etc.
+
+FIXME
+*/
+LE.log( {
+	event: 'More advanced logging',
+	array_field: ['string', 10, 2.56],
+	complex_field: {
+		sub_element: 'first',
+		sub_element2: 'second'
+	}
+});
+
+/*
+Values must be properly escaped.
+*/
+LE.log( {
+	event: 'Excaping "test" \'test\' \\ !@#$%^*()',
+});
+LE.log( '--- Last but one');
+
+</script>
+
+<script>
+/*
+Error logging
+*/
+var a = 1, b = 0;
+var c = a/d;
+
+</script>
+
+<script>
+LE.log( '--- End');
+
+
+/*
+FIXME - proposal
+
+log(sddsdfG);
+log.warn(sdfsdF);
+log.error(sdsdaF);
+log.info(sdsadf);
+*/
+</script>
+
+</body>
+</html>
+
