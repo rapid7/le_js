@@ -36,7 +36,7 @@ var LE = (function(window) {
     /** @type {boolean} */
     var _active = false;
 
-    if (options.onerror) {
+    if (options.catchall) {
       var oldHandler = window.onerror;
       var newHandler = function(msg, url, line) {
         _rawLog({error: msg, line: line, url: url});
@@ -109,7 +109,7 @@ var LE = (function(window) {
               }
             }
           }
-            
+
         }
         var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
         request.open("POST", uri, true);

@@ -1,6 +1,6 @@
-window = {};
+var window = {};
 
-XMLHttpRequest = function() {
+var XMLHttpRequest = function() {
   var that = this;
 
   this.onreadystatechange = null;

@@ -65,5 +65,27 @@ wru.test([
 
       wru.assert(true, didFail);
     }
+  },
+  {
+    name: 'init cannot work without token (with object param)',
+    test: function() {
+      var didFail = false;
+      try {
+        var le = LE.init({});
+      } catch (err) {
+        wru.assert(err.message === "Token not present.");
+        wru.assert(true, le === undefined);
+        didFail = true;
+      }
+
+      wru.assert(true, didFail);
+    }
+  },
+  {
+    name: 'test catchall handler works',
+    test: function() {
+      LE.init({token: 'SOMETOKEN', catchall: true});
+      wru.assert(true, onerror !== undefined);
+    }
   }
 ]);
