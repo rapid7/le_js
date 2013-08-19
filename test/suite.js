@@ -84,8 +84,49 @@ wru.test([
   {
     name: 'test catchall handler works',
     test: function() {
-      LE.init({token: 'SOMETOKEN', catchall: true});
+      LE.init({token: 'SOME-TOKEN', catchall: true});
       wru.assert(true, onerror !== undefined);
+    }
+  },
+  {
+    name: 'test log() with null array values handled properly',
+    test: function() {
+      LE.init('SOME-TOKEN');
+
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data === "This is null null");
+      }
+
+      LE.log("This is null", null);
+    }
+  },
+  {
+    name: 'test log() with undef array values handled properly',
+    test: function() {
+      LE.init('SOME-TOKEN');
+
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data === "This is null undefined");
+      }
+
+      LE.log("This is null", undefined);
+    }
+  },
+  {
+    name: 'test log() with object w/ nullish members handled properly',
+    test: function() {
+      LE.init('SOME-TOKEN');
+
+//      LE.log({
+//        event: 'More advanced logging',
+//        array_field: ['string', 10, 2.56],
+//        complex_field: {
+//          sub_element: 'first',
+//          sub_2: 'second',
+//          something: null,
+//          sub_4: undefined
+//        }
+//      });
     }
   }
 ]);

@@ -66,7 +66,16 @@ var LE = (function(window) {
         // Handle a variadic overload,
         // e.g. _rawLog("some text ", x, " ...", 1);
         var interpolated = Array.prototype.slice.call(arguments);
-        payload = interpolated.join(" ");
+        var objects = [];
+        for (var i = 0; i < interpolated.length; i++) {
+          if (interpolated[i] === null) {
+            objects.push("null");
+          } else if (interpolated[i] === undefined) {
+            objects.push("undefined");
+          } else
+            objects.push(interpolated[i]);
+        }
+        payload = objects.join(" ");
       }
 
       if (_active) {
