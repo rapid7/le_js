@@ -69,6 +69,24 @@ LE.log( {
 });
 LE.log( '--- Last but one');
 
+/*
+Null values must not crash the lib.
+*/
+LE.log( null);
+LE.log( undefined);
+LE.log( 'This is null', null);
+LE.log( 'This is undefined', undefined);
+LE.log( {
+	event: 'With null and undefined values',
+	is_null: null,
+	is_undef: undefined,
+	complex: {
+		event: 'Sub fields',
+		sub_null: null,
+		sub_undex: undefined
+	}
+});
+
 </script>
 
 <script>
