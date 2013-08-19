@@ -19,6 +19,8 @@ var LE = (function(window) {
     /** @type {boolean} */
     var _doTrace = options.trace;
     /** @type {string} */
+    var _pageInfo = options.page_info;
+    /** @type {string} */
     var _token = options.token;
     /**
      * @const
@@ -43,6 +45,17 @@ var LE = (function(window) {
         if (oldHandler) oldHandler(msg, url, line);
       }
       window.onerror = newHandler;
+    }
+
+    var _agentInfo = function() {
+      var nav = window.navigator || {};
+      var screen = window.screen || {};
+
+      return {
+        agent: nav.userAgent,
+        screenWidth: screen.width,
+        screenHeight: screen.height
+      };
     }
 
     var isComplex = function(obj) {
@@ -178,6 +191,7 @@ var LE = (function(window) {
 
     dict.catchall = dict.catchall || false;
     dict.trace = dict.trace || false;
+    dict.page_info = dict.page_info || 'none';
 
     if (dict.token === undefined) {
       throw new Error("Token not present.");
