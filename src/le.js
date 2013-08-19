@@ -17,7 +17,7 @@ var LE = (function(window) {
      * @type {string} */
     var _tracecode = (Math.random() + Math.PI).toString(36).substring(2,10);
     /** @type {boolean} */
-    var _doTrace = options.tracecode;
+    var _doTrace = options.trace;
     /** @type {string} */
     var _token = options.token;
     /**
