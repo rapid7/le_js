@@ -98,6 +98,8 @@ var LE = (function(window) {
      * @const
      * @type {string} */
     var _tracecode = (Math.random() + Math.PI).toString(36).substring(2,10);
+    /** @type {boolean} */
+    var _doTrace = options.trace;
     /** @type {string} */
     var _token = options.token;
     /**
@@ -116,7 +118,7 @@ var LE = (function(window) {
     /** @type {boolean} */
     var _active = false;
 
-    if (options.onerror) {
+    if (options.catchall) {
       var oldHandler = window.onerror;
       var newHandler = function(msg, url, line) {
         _rawLog({error: msg, line: line, url: url});
@@ -125,11 +127,48 @@ var LE = (function(window) {
       window.onerror = newHandler;
     }
 
-    var _serialize = function(obj) {
-      var str = [];
-      for(var p in obj)
-        str.push(p + "=" + obj[p]);
-      return str.join("&");
+    var isComplex = function(obj) {
+      return typeof obj === "object" || Array.isArray(obj);
+    }
+
+    var _flatten = function(data, prefix, obj) {
+      if (isComplex) {
+        var acc = [];
+        for (var k in data) {
+          var literal = null;
+          if (data[k] === null) {
+            literal = "null";
+          } else if (data[k] === undefined) {
+            literal = "undefined";
+          } else {
+            literal = data[k];
+          }
+
+          if (isComplex(literal)) {
+            if (Array.isArray(data)) {
+              acc.push(_flatten(literal, prefix, false));
+            } else {
+              acc.push(_flatten(literal, prefix + k + ".", true));
+            }
+          } else {
+            if (Array.isArray(data)) {
+              acc.push(literal);
+            } else {
+              acc.push(prefix + k + "=" + literal);
+            }
+          }
+        }
+
+        if (Array.isArray(data)) {
+          if (obj) {
+            return prefix.substring(0, prefix.length-1) + "=[" + acc.join(",") + "]";
+          } else {
+            return "[" + acc.join(",") + "]";
+          }
+        } else {
+          return acc.join("&");
+        }
+      }
     }
 
     // Single param stops the compiler
@@ -141,12 +180,21 @@ var LE = (function(window) {
         if (typeof raw === "string") {
           payload = raw;
         } else if (typeof raw === "object")
-          payload = _serialize(raw);
+          payload = _flatten(raw, "", !Array.isArray(raw));
       } else {
         // Handle a variadic overload,
         // e.g. _rawLog("some text ", x, " ...", 1);
         var interpolated = Array.prototype.slice.call(arguments);
-        payload = interpolated.join(" ");
+        var objects = [];
+        for (var i = 0; i < interpolated.length; i++) {
+          if (interpolated[i] === null) {
+            objects.push("null");
+          } else if (interpolated[i] === undefined) {
+            objects.push("undefined");
+          } else
+            objects.push(interpolated[i]);
+        }
+        payload = objects.join(" ");
       }
 
       if (_active) {
@@ -189,7 +237,7 @@ var LE = (function(window) {
               }
             }
           }
-            
+
         }
         var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
         request.open("POST", uri, true);
@@ -210,7 +258,7 @@ var LE = (function(window) {
     else if (typeof options === "string")
       dict.token = options;
 
-    dict.onerror = dict.onerror || false;
+    dict.catchall = dict.catchall || false;
     dict.trace = dict.trace || false;
 
     if (dict.token === undefined) {

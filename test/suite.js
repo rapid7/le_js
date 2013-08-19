@@ -117,16 +117,48 @@ wru.test([
     test: function() {
       LE.init('SOME-TOKEN');
 
-//      LE.log({
-//        event: 'More advanced logging',
-//        array_field: ['string', 10, 2.56],
-//        complex_field: {
-//          sub_element: 'first',
-//          sub_2: 'second',
-//          something: null,
-//          sub_4: undefined
-//        }
-//      });
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data === "event=data&complex.a=null&complex.b=undefined");
+      }
+
+      LE.log({
+        event: 'data',
+        complex: {
+          a: null,
+          b: undefined
+        }
+      });
+    }
+  },
+  {
+    name: 'test log() w/ nullish nested array elements',
+    test: function() {
+      LE.init('SOME-TOKEN');
+
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data === "[some,event,[nested,null]]");
+      }
+
+      LE.log(["some", "event", ["nested", null]]);
+    }
+  },
+  {
+    name: 'test log() w/ nullish objects + arrays',
+    test: function() {
+      LE.init('SOME-TOKEN');
+
+      XMLHttpRequest.spy = function(data) {
+        var str = "some=event&complex.nested=[null,[again]]&complex.some=undefined";
+        wru.assert(true, data === str);
+      }
+
+      LE.log({
+        some: 'event',
+        complex: {
+          nested: [null, ['again']],
+          some: undefined
+        }
+      });
     }
   }
 ]);

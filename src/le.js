@@ -45,11 +45,48 @@ var LE = (function(window) {
       window.onerror = newHandler;
     }
 
-    var _serialize = function(obj) {
-      var str = [];
-      for(var p in obj)
-        str.push(p + "=" + obj[p]);
-      return str.join("&");
+    var isComplex = function(obj) {
+      return typeof obj === "object" || Array.isArray(obj);
+    }
+
+    var _flatten = function(data, prefix, obj) {
+      if (isComplex) {
+        var acc = [];
+        for (var k in data) {
+          var literal = null;
+          if (data[k] === null) {
+            literal = "null";
+          } else if (data[k] === undefined) {
+            literal = "undefined";
+          } else {
+            literal = data[k];
+          }
+
+          if (isComplex(literal)) {
+            if (Array.isArray(data)) {
+              acc.push(_flatten(literal, prefix, false));
+            } else {
+              acc.push(_flatten(literal, prefix + k + ".", true));
+            }
+          } else {
+            if (Array.isArray(data)) {
+              acc.push(literal);
+            } else {
+              acc.push(prefix + k + "=" + literal);
+            }
+          }
+        }
+
+        if (Array.isArray(data)) {
+          if (obj) {
+            return prefix.substring(0, prefix.length-1) + "=[" + acc.join(",") + "]";
+          } else {
+            return "[" + acc.join(",") + "]";
+          }
+        } else {
+          return acc.join("&");
+        }
+      }
     }
 
     // Single param stops the compiler
@@ -61,7 +98,7 @@ var LE = (function(window) {
         if (typeof raw === "string") {
           payload = raw;
         } else if (typeof raw === "object")
-          payload = _serialize(raw);
+          payload = _flatten(raw, "", !Array.isArray(raw));
       } else {
         // Handle a variadic overload,
         // e.g. _rawLog("some text ", x, " ...", 1);
