@@ -6,6 +6,15 @@
 var LE = (function(window) {
   "use strict";
 
+  /** @enum {number} */
+  var _infoOptions = {
+    PER_PAGE: 0,
+    PER_ENTRY: 1,
+    NEVER: 2
+  }
+
+  var _instance = null;
+
   /**
    * A single log event stream.
    * @constructor
@@ -15,7 +24,9 @@ var LE = (function(window) {
     /**
      * @const
      * @type {string} */
-    var _tracecode = (Math.random() + Math.PI).toString(36).substring(2,10);
+    var _traceCode = (Math.random() + Math.PI).toString(36).substring(2,10);
+    /** @type {number} */
+    var _sendInfo = options.page_info;
     /** @type {boolean} */
     var _doTrace = options.trace;
     /** @type {string} */
@@ -37,6 +48,8 @@ var LE = (function(window) {
     var _backlog = [];
     /** @type {boolean} */
     var _active = false;
+    /** @type {boolean} */
+    var _sentPageInfo = false;
 
     if (options.catchall) {
       var oldHandler = window.onerror;
@@ -92,9 +105,9 @@ var LE = (function(window) {
 
         if (Array.isArray(data)) {
           if (obj) {
-            return prefix.substring(0, prefix.length-1) + "=[" + acc.join(",") + "]";
+            return prefix.substring(0, prefix.length-1) + "=" + acc.join(",");
           } else {
-            return "[" + acc.join(",") + "]";
+            return acc.join(",");
           }
         } else {
           return acc.join("&");
@@ -127,6 +140,16 @@ var LE = (function(window) {
         }
         payload = objects.join(" ");
       }
+
+      payload = [payload];
+
+      // Add trace code if required
+      if (_doTrace) {
+        payload.unshift({tracecode: _traceCode});
+      }
+
+      // Add agent info if required
+      payload = _flatten(payload, "", false);
 
       if (_active) {
         _backlog.push(payload);
@@ -191,7 +214,7 @@ var LE = (function(window) {
 
     dict.catchall = dict.catchall || false;
     dict.trace = dict.trace || false;
-    dict.page_info = dict.page_info || 'none';
+    dict.page_info = dict.page_info || _infoOptions.NEVER;
 
     if (dict.token === undefined) {
       throw new Error("Token not present.");
@@ -211,6 +234,7 @@ var LE = (function(window) {
 
   return {
     init: _init,
-    log: _log
+    log: _log,
+    InfoOptions: _infoOptions
   };
 } (this));

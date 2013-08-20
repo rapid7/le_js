@@ -15,6 +15,7 @@ wru.test([
     name: 'submit simple string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
+        print(data)
         wru.assert(true, data === "Hello, world!");
       }
       LE.init({token:'foo'});
@@ -136,7 +137,7 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "[some,event,[nested,null]]");
+        wru.assert(true, data === "some,event,nested,null");
       }
 
       LE.log(["some", "event", ["nested", null]]);
@@ -148,7 +149,7 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        var str = "some=event&complex.nested=[null,[again]]&complex.some=undefined";
+        var str = "some=event&complex.nested=null,again&complex.some=undefined";
         wru.assert(true, data === str);
       }
 
@@ -159,6 +160,19 @@ wru.test([
           some: undefined
         }
       });
+    }
+  },
+  {
+    name: 'test trace code',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', trace: true});
+
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data.substr(0, 10) === "tracecode=");
+        wru.assert(true, data.substr(18) === ",hi");
+      }
+
+      LE.log("hi")
     }
   }
 ]);
