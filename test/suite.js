@@ -172,7 +172,31 @@ wru.test([
         wru.assert(true, data.substr(18) === ",hi");
       }
 
-      LE.log("hi")
+      LE.log("hi");
+    }
+  },
+  {
+    name: 'test page info when never',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', page_info: 'never'});
+
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data === "hi");
+      }
+
+      LE.log("hi");
+    }
+  },
+  {
+    name: 'test page info per-entry',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', page_info: 'per-entry'});
+
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, data === "agent=undefined&screenWidth=undefined&screenHeight=undefined,hi");
+      }
+
+      LE.log("hi");
     }
   }
 ]);
