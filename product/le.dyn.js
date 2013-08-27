@@ -88,15 +88,6 @@ var XMLHttpRequest = function() {
 var LE = (function(window) {
   "use strict";
 
-  /** @enum {number} */
-  var _infoOptions = {
-    PER_PAGE: 0,
-    PER_ENTRY: 1,
-    NEVER: 2
-  }
-
-  var _instance = null;
-
   /**
    * A single log event stream.
    * @constructor
@@ -225,12 +216,21 @@ var LE = (function(window) {
 
       payload = [payload];
 
+      // Add agent info if required
+      if (_pageInfo !== 'never') {
+        if (_pageInfo === 'per-entry') {
+          payload.unshift(_agentInfo());
+        } else if (!_sentPageInfo) {
+          payload.unshift(_agentInfo());
+          _sentPageInfo = true;
+        }
+      }
+
       // Add trace code if required
       if (_doTrace) {
         payload.unshift({tracecode: _traceCode});
       }
 
-      // Add agent info if required
       payload = _flatten(payload, "", false);
 
       if (_active) {
@@ -296,7 +296,7 @@ var LE = (function(window) {
 
     dict.catchall = dict.catchall || false;
     dict.trace = dict.trace || false;
-    dict.page_info = dict.page_info || _infoOptions.NEVER;
+    dict.page_info = dict.page_info || 'never';
 
     if (dict.token === undefined) {
       throw new Error("Token not present.");
@@ -316,8 +316,7 @@ var LE = (function(window) {
 
   return {
     init: _init,
-    log: _log,
-    InfoOptions: _infoOptions
+    log: _log
   };
 } (this));
 module.exports = LE;
