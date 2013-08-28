@@ -132,7 +132,7 @@ var LE = (function(window) {
         payload = objects.join(" ");
       }
 
-      payload = [payload];
+      payload = [{'event':payload}];
 
       // Add agent info if required
       if (_pageInfo !== 'never') {

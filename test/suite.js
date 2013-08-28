@@ -15,8 +15,7 @@ wru.test([
     name: 'submit simple string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        print(data)
-        wru.assert(true, data === "Hello, world!");
+        wru.assert(true, data === "event=Hello, world!");
       }
       LE.init({token:'foo'});
       LE.log("Hello, world!");
@@ -26,7 +25,7 @@ wru.test([
     name: 'submit interpolated string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "Hello, 1 more...");
+        wru.assert(true, data === "event=Hello, 1 more...");
       }
       LE.init({token:'foo'});
       LE.log("Hello,", 1, "more...");
@@ -36,7 +35,7 @@ wru.test([
     name: 'submit array of strings',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "Hello, logger");
+        wru.assert(true, data === "event=Hello, logger");
       }
       LE.init({token:'foo'});
       LE.log("Hello,", "logger");
@@ -46,7 +45,7 @@ wru.test([
     name: 'submit object event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "Hello=world!");
+        wru.assert(true, data === "event=Hello=world!");
       }
       LE.init({token:'foo'});
       LE.log({"Hello": "world!"});
@@ -95,7 +94,7 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "This is null null");
+        wru.assert(true, data === "event=This is null null");
       }
 
       LE.log("This is null", null);
@@ -107,7 +106,7 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "This is null undefined");
+        wru.assert(true, data === "event=This is null undefined");
       }
 
       LE.log("This is null", undefined);
@@ -119,11 +118,11 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "event=data&complex.a=null&complex.b=undefined");
+        wru.assert(true, data === "event=some=data&complex.a=null&complex.b=undefined");
       }
 
       LE.log({
-        event: 'data',
+        some: 'data',
         complex: {
           a: null,
           b: undefined
@@ -137,7 +136,7 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "some,event,nested,null");
+        wru.assert(true, data === "event=some,event,nested,null");
       }
 
       LE.log(["some", "event", ["nested", null]]);
@@ -149,7 +148,7 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        var str = "some=event&complex.nested=null,again&complex.some=undefined";
+        var str = "event=some=event&complex.nested=null,again&complex.some=undefined";
         wru.assert(true, data === str);
       }
 
@@ -169,7 +168,7 @@ wru.test([
 
       XMLHttpRequest.spy = function(data) {
         wru.assert(true, data.substr(0, 10) === "tracecode=");
-        wru.assert(true, data.substr(18) === ",hi");
+        wru.assert(true, data.substr(18) === ",event=hi");
       }
 
       LE.log("hi");
@@ -181,7 +180,7 @@ wru.test([
       LE.init({token: 'SOME-TOKEN', page_info: 'never'});
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "hi");
+        wru.assert(true, data === "event=hi");
       }
 
       LE.log("hi");
@@ -193,7 +192,7 @@ wru.test([
       LE.init({token: 'SOME-TOKEN', page_info: 'per-entry'});
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === "agent=undefined&screenWidth=undefined&screenHeight=undefined,hi");
+        wru.assert(true, data === "agent=undefined&screenWidth=undefined&screenHeight=undefined,event=hi");
       }
 
       LE.log("hi");
