@@ -52,109 +52,78 @@ var LE = (function(window) {
     }
 
     var _agentInfo = function() {
-      var nav = window.navigator || {};
-      var screen = window.screen || {};
+      var nav = window.navigator || {userAgent: "unknown"};
+      var screen = window.screen || {width: "unknown", height: "unknown"};
 
       return {
-        agent: nav.userAgent,
+        name: nav.userAgent,
         screenWidth: screen.width,
         screenHeight: screen.height
       };
     }
 
-    var isComplex = function(obj) {
-      return typeof obj === "object" || Array.isArray(obj);
+    var _isComplex = function(obj) {
+      return (typeof obj === "object" || Array.isArray(obj)) && obj !== null;
     }
 
-    var _flatten = function(data, prefix, obj) {
-      if (isComplex) {
-        var acc = [];
-        for (var k in data) {
-          var literal = null;
-          if (data[k] === null) {
-            literal = "null";
-          } else if (data[k] === undefined) {
-            literal = "undefined";
-          } else {
-            literal = data[k];
-          }
+    var _prettyPrint = function(obj) {
+      if (typeof obj === "undefined") {
+        return "undefined";
+      } else if (obj === null) {
+        return "null";
+      } else {
+        return obj;
+      }
+    }
 
-          if (isComplex(literal)) {
-            if (Array.isArray(data)) {
-              acc.push(_flatten(literal, prefix, false));
-            } else {
-              acc.push(_flatten(literal, prefix + k + ".", true));
-            }
-          } else {
-            if (Array.isArray(data)) {
-              acc.push(literal);
-            } else {
-              acc.push(prefix + k + "=" + literal);
-            }
-          }
+    var _serialize = function(obj) {
+      if (_isComplex(obj)) {
+        for (var o in obj) {
+          obj[o] = _serialize(obj[o]);
         }
-
-        if (Array.isArray(data)) {
-          if (obj) {
-            return prefix.substring(0, prefix.length-1) + "=" + acc.join(",");
-          } else {
-            return acc.join(",");
-          }
-        } else {
-          return acc.join("&");
-        }
+        return obj;
+      } else {
+        return _prettyPrint(obj);
       }
     }
 
     // Single param stops the compiler
     // complaining about wrong arity.
     var _rawLog = function(msg) {
-      var payload = {};
-      if (arguments.length === 1) {
-        var raw = arguments[0];
-        if (typeof raw === "string") {
-          payload = raw;
-        } else if (typeof raw === "object")
-          payload = _flatten(raw, "", !Array.isArray(raw));
+      var raw = null;
+      var args = Array.prototype.slice.call(arguments);
+
+      if (args.length === 0) {
+        throw new Error("No arguments!");
+      } else if (args.length === 1) {
+        raw = args[0];
       } else {
         // Handle a variadic overload,
         // e.g. _rawLog("some text ", x, " ...", 1);
-        var interpolated = Array.prototype.slice.call(arguments);
-        var objects = [];
-        for (var i = 0; i < interpolated.length; i++) {
-          if (interpolated[i] === null) {
-            objects.push("null");
-          } else if (interpolated[i] === undefined) {
-            objects.push("undefined");
-          } else
-            objects.push(interpolated[i]);
-        }
-        payload = objects.join(" ");
+        raw = _serialize(args).join(" ");
       }
 
-      payload = [{'event':payload}];
+      var data = {event: raw};
 
       // Add agent info if required
       if (_pageInfo !== 'never') {
-        if (_pageInfo === 'per-entry') {
-          payload.unshift(_agentInfo());
-        } else if (!_sentPageInfo) {
-          payload.unshift(_agentInfo());
+        if (_pageInfo === 'per-entry' || !_sentPageInfo) {
+          data.agent = _agentInfo();
           _sentPageInfo = true;
         }
       }
 
       // Add trace code if required
       if (_doTrace) {
-        payload.unshift({tracecode: _traceCode});
+        data.tracecode = _traceCode;
       }
 
-      payload = _flatten(payload, "", false);
+      var serialized = JSON.stringify(_serialize(data));
 
       if (_active) {
-        _backlog.push(payload);
+        _backlog.push(serialized);
       } else {
-        _apiCall(_token, payload);
+        _apiCall(_token, serialized);
       }
     }
 
@@ -196,7 +165,7 @@ var LE = (function(window) {
         var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
         request.open("POST", uri, true);
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.setRequestHeader('Content-type', 'text/json');
         request.send(data);
       }
     }
