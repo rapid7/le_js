@@ -4,6 +4,9 @@
     Official Logentries JavaScript client
   </description>
 
+  <property name="api.version" value="1"/>
+  <property name="api.endpoint" value="js.logentries.com/v${api.version}"/>
+
   <property name="src"  location="src"/>
   <property name="lib"  location="lib"/>
 
@@ -25,7 +28,7 @@
     <!-- Let's grab Ivy now if it's not installed -->
     <mkdir dir="${ivy.jar.dir}"/>
     <get
-        src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" 
+        src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
         dest="${ivy.jar.file}" usetimestamp="true"/>
   </target>
 
@@ -88,14 +91,11 @@
       <fileset dir="src"/>
     </copy>
 
-    <replace file="build/le.js">
-      <replacefilter>
-        <replacetoken>localhost:8080</replacetoken>
-        <replacevalue>js.logentries.com</replacevalue>
-      </replacefilter>
-    </replace>
+    <replace file="build/le.js"
+             token="localhost:8080"
+             value="${api.endpoint}"/>
 
-    <jscomp compilationLevel="simple" warning="verbose" 
+    <jscomp compilationLevel="simple" warning="verbose"
             debug="false" output="build/le.min.js"
             languageIn="ECMASCRIPT5_STRICT">
 

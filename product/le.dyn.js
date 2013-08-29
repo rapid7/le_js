@@ -109,7 +109,7 @@ var LE = (function(window) {
     /**
      * @const
      * @type {string} */
-    var _endpoint = "js.logentries.com";
+    var _endpoint = "js.logentries.com/v1";
 
     /**
      * Flag to prevent further invocations on network err
@@ -288,4 +288,11 @@ var LE = (function(window) {
     log: _log
   };
 } (this));
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 module.exports = LE;
