@@ -107,8 +107,7 @@ var LE = (function(window) {
 
     // Expects a [level, event] tuple
     var _rawLog = function(msg) {
-      var level = msg[0];
-      var event = _getEvent(msg[1]);
+      var event = _getEvent(arguments);
 
       var data = {event: event};
 
@@ -125,13 +124,19 @@ var LE = (function(window) {
         data.trace = _traceCode;
       }
 
-      var serialized = JSON.stringify(_serialize(data));
+      return {level: function(l) {
+        data.level = l;
 
-      if (_active) {
-        _backlog.push(serialized);
-      } else {
-        _apiCall(_token, serialized);
-      }
+        return {send: function() {
+          var serialized = JSON.stringify(_serialize(data));
+
+          if (_active) {
+            _backlog.push(serialized);
+          } else {
+            _apiCall(_token, serialized);
+          }
+        }};
+      }};
     }
 
     /** @expose */
@@ -218,7 +223,7 @@ var LE = (function(window) {
   var _log = function() {
     var args = Array.prototype.slice.call(arguments);
     if (logger) {
-      logger.log.apply(this, arguments);
+      return logger.log.apply(this, arguments);
     } else
       throw new Error("You must call LE.init(...) first.");
   }
@@ -226,7 +231,7 @@ var LE = (function(window) {
   return {
     init: _init,
     log: function() {
-      _log(['LOG', arguments]);
+      _log(arguments).level('LOG').send();
     },
     warn: _log,
     error: _log,
