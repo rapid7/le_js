@@ -27,7 +27,7 @@ var LE = (function(window) {
     /**
      * @const
      * @type {string} */
-    var _endpoint = "localhost:8080";
+    var _endpoint = "localhost:8080/v1";
 
     /**
      * Flag to prevent further invocations on network err
@@ -76,6 +76,9 @@ var LE = (function(window) {
       }
     }
 
+    // Traverses a log object,
+    // turning nullish values into
+    // string literals
     var _serialize = function(obj) {
       if (_isComplex(obj)) {
         for (var o in obj) {
@@ -115,7 +118,7 @@ var LE = (function(window) {
 
       // Add trace code if required
       if (_doTrace) {
-        data.tracecode = _traceCode;
+        data.trace = _traceCode;
       }
 
       var serialized = JSON.stringify(_serialize(data));
@@ -149,9 +152,18 @@ var LE = (function(window) {
       if (_shouldCall) {
         request.onreadystatechange = function() {
           if (request.readyState === 4) {
+            // Handle any errors
             if (request.status >= 400) {
-              console.warn("Couldn't submit events.");
+              console.error("Couldn't submit events.");
+              if (request.status === 410) {
+                // This API version has been phased out
+                console.warn("This version of le_js is no longer supported!");
+              }
             } else {
+              if (request.status === 301) {
+                // Server issued a deprecation warning
+                console.warn("This version of le_js is deprecated! Consider upgrading.");
+              }
               if (_backlog.length > 0) {
                 // Submit the next event in the backlog
                 _apiCall(token, _backlog.shift());

@@ -169,8 +169,8 @@ wru.test([
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
         wru.assert(true, parsed['event'] === "hi");
-        wru.assert(true, parsed['tracecode'] !== null);
-        wru.assert(true, parsed['tracecode'].length === 8);
+        wru.assert(true, parsed['trace'] !== null);
+        wru.assert(true, parsed['trace'].length === 8);
       }
 
       LE.log("hi");
