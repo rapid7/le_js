@@ -90,12 +90,9 @@ var LE = (function(window) {
       }
     }
 
-    // Single param stops the compiler
-    // complaining about wrong arity.
-    var _rawLog = function(msg) {
+    var _getEvent = function() {
       var raw = null;
       var args = Array.prototype.slice.call(arguments);
-
       if (args.length === 0) {
         throw new Error("No arguments!");
       } else if (args.length === 1) {
@@ -105,8 +102,15 @@ var LE = (function(window) {
         // e.g. _rawLog("some text ", x, " ...", 1);
         raw = _serialize(args).join(" ");
       }
+      return raw;
+    }
 
-      var data = {event: raw};
+    // Expects a [level, event] tuple
+    var _rawLog = function(msg) {
+      var level = msg[0];
+      var event = _getEvent(msg[1]);
+
+      var data = {event: event};
 
       // Add agent info if required
       if (_pageInfo !== 'never') {
@@ -181,18 +185,23 @@ var LE = (function(window) {
         request.send(data);
       }
     }
+
+
   }
 
   var logger;
 
   var _init = function(options) {
-    var dict = {ssl: true};
+    var dict = {};
     if (typeof options === "object")
       for (var k in options)
         dict[k] = options[k];
     else if (typeof options === "string")
       dict.token = options;
+    else
+      throw new Error("Invalid parameters for init()");
 
+    dict.ssl = dict.ssl || true;
     dict.catchall = dict.catchall || false;
     dict.trace = dict.trace || false;
     dict.page_info = dict.page_info || 'never';
@@ -207,6 +216,7 @@ var LE = (function(window) {
   };
 
   var _log = function() {
+    var args = Array.prototype.slice.call(arguments);
     if (logger) {
       logger.log.apply(this, arguments);
     } else
@@ -215,6 +225,11 @@ var LE = (function(window) {
 
   return {
     init: _init,
-    log: _log
+    log: function() {
+      _log(['LOG', arguments]);
+    },
+    warn: _log,
+    error: _log,
+    info: _log
   };
 } (this));
