@@ -105,9 +105,8 @@ var LE = (function(window) {
       return raw;
     }
 
-    // Expects a [level, event] tuple
     var _rawLog = function(msg) {
-      var event = _getEvent(arguments);
+      var event = _getEvent.apply(this, arguments);
 
       var data = {event: event};
 
@@ -191,13 +190,18 @@ var LE = (function(window) {
       }
     }
 
-
   }
 
   var logger;
 
   var _init = function(options) {
-    var dict = {};
+    var dict = {
+      ssl: true,
+      catchall: false,
+      trace: false,
+      page_info: 'never'
+    };
+
     if (typeof options === "object")
       for (var k in options)
         dict[k] = options[k];
@@ -205,11 +209,6 @@ var LE = (function(window) {
       dict.token = options;
     else
       throw new Error("Invalid parameters for init()");
-
-    dict.ssl = dict.ssl || true;
-    dict.catchall = dict.catchall || false;
-    dict.trace = dict.trace || false;
-    dict.page_info = dict.page_info || 'never';
 
     if (dict.token === undefined) {
       throw new Error("Token not present.");
@@ -221,20 +220,26 @@ var LE = (function(window) {
   };
 
   var _log = function() {
-    var args = Array.prototype.slice.call(arguments);
     if (logger) {
       return logger.log.apply(this, arguments);
     } else
       throw new Error("You must call LE.init(...) first.");
   }
 
+  // The public interface
   return {
     init: _init,
     log: function() {
-      _log(arguments).level('LOG').send();
+      _log.apply(this, arguments).level('LOG').send();
     },
-    warn: _log,
-    error: _log,
-    info: _log
+    warn: function() {
+      _log.apply(this, arguments).level('WARN').send();
+    },
+    error: function() {
+      _log.apply(this, arguments).level('ERROR').send();
+    },
+    info: function() {
+      _log.apply(this, arguments).level('INFO').send();
+    }
   };
 } (this));

@@ -15,8 +15,7 @@ wru.test([
     name: 'submit simple string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        print(data)
-        wru.assert(true, data === '{\"event\":\"Hello, world!\"}');
+        wru.assert(true, data === '{\"event\":\"Hello, world!\",\"level\":\"LOG\"}');
       }
       LE.init({token:'foo'});
       LE.log("Hello, world!");
@@ -26,7 +25,8 @@ wru.test([
     name: 'submit interpolated string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":\"Hello, 1 more...\"}');
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed['event'] === 'Hello, 1 more...');
       }
       LE.init({token:'foo'});
       LE.log("Hello,", 1, "more...");
@@ -36,7 +36,8 @@ wru.test([
     name: 'submit array of strings',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":\"Hello, logger\"}');
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed['event'] === 'Hello, logger');
       }
       LE.init({token:'foo'});
       LE.log("Hello,", "logger");
@@ -46,7 +47,8 @@ wru.test([
     name: 'submit object event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":{\"Hello\":\"world!\"}}');
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed['event']['Hello'] === 'world!');
       }
       LE.init({token:'foo'});
       LE.log({"Hello": "world!"});
@@ -59,7 +61,7 @@ wru.test([
       try {
         var le = LE.init();
       } catch (err) {
-        wru.assert(err.message === "Token not present.");
+        wru.assert(err.message === "Invalid parameters for init()");
         wru.assert(true, le === undefined);
         didFail = true;
       }
@@ -95,7 +97,8 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":\"This is null null\"}');
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed['event'] === 'This is null null');
       }
 
       LE.log("This is null", null);
@@ -107,7 +110,8 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":\"This is null undefined\"}');
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed['event'] === 'This is null undefined');
       }
 
       LE.log("This is null", undefined);
@@ -119,7 +123,10 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":{\"some\":\"data\",\"complex\":{\"a\":\"null\",\"b\":\"undefined\"}}}');
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed.event['some'] === 'data');
+        wru.assert(true, parsed.event['complex']['a'] === 'null');
+        wru.assert(true, parsed.event['complex']['b'] === 'undefined');
       }
 
       LE.log({
@@ -137,7 +144,11 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":[\"some\",\"event\",[\"nested\",\"null\"]]}');
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed.event[0] === 'some');
+        wru.assert(true, parsed.event[1] === 'event');
+        wru.assert(true, typeof parsed.event[2] === "object");
+        wru.assert(true, parsed.event[2][1] === "null");
       }
 
       LE.log(["some", "event", ["nested", null]]);
@@ -149,8 +160,10 @@ wru.test([
       LE.init('SOME-TOKEN');
 
       XMLHttpRequest.spy = function(data) {
-        var str = '{\"event\":{\"some\":\"event\",\"complex\":{\"nested\":[\"null\",[\"again\"]],\"some\":\"undefined\"}}}';
-        wru.assert(true, data === str);
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed.event['complex']['nested'][0] === "null");
+        wru.assert(true, parsed.event['complex']['nested'][1][0] === "again");
+        wru.assert(true, parsed.event['complex']['some'] === 'undefined');
       }
 
       LE.log({

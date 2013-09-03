@@ -90,12 +90,9 @@ var LE = (function(window) {
       }
     }
 
-    // Single param stops the compiler
-    // complaining about wrong arity.
-    var _rawLog = function(msg) {
+    var _getEvent = function() {
       var raw = null;
       var args = Array.prototype.slice.call(arguments);
-
       if (args.length === 0) {
         throw new Error("No arguments!");
       } else if (args.length === 1) {
@@ -105,8 +102,13 @@ var LE = (function(window) {
         // e.g. _rawLog("some text ", x, " ...", 1);
         raw = _serialize(args).join(" ");
       }
+      return raw;
+    }
 
-      var data = {event: raw};
+    var _rawLog = function(msg) {
+      var event = _getEvent.apply(this, arguments);
+
+      var data = {event: event};
 
       // Add agent info if required
       if (_pageInfo !== 'never') {
@@ -121,13 +123,19 @@ var LE = (function(window) {
         data.trace = _traceCode;
       }
 
-      var serialized = JSON.stringify(_serialize(data));
+      return {level: function(l) {
+        data.level = l;
 
-      if (_active) {
-        _backlog.push(serialized);
-      } else {
-        _apiCall(_token, serialized);
-      }
+        return {send: function() {
+          var serialized = JSON.stringify(_serialize(data));
+
+          if (_active) {
+            _backlog.push(serialized);
+          } else {
+            _apiCall(_token, serialized);
+          }
+        }};
+      }};
     }
 
     /** @expose */
@@ -181,21 +189,26 @@ var LE = (function(window) {
         request.send(data);
       }
     }
+
   }
 
   var logger;
 
   var _init = function(options) {
-    var dict = {ssl: true};
+    var dict = {
+      ssl: true,
+      catchall: false,
+      trace: false,
+      page_info: 'never'
+    };
+
     if (typeof options === "object")
       for (var k in options)
         dict[k] = options[k];
     else if (typeof options === "string")
       dict.token = options;
-
-    dict.catchall = dict.catchall || false;
-    dict.trace = dict.trace || false;
-    dict.page_info = dict.page_info || 'never';
+    else
+      throw new Error("Invalid parameters for init()");
 
     if (dict.token === undefined) {
       throw new Error("Token not present.");
@@ -208,13 +221,25 @@ var LE = (function(window) {
 
   var _log = function() {
     if (logger) {
-      logger.log.apply(this, arguments);
+      return logger.log.apply(this, arguments);
     } else
       throw new Error("You must call LE.init(...) first.");
   }
 
+  // The public interface
   return {
     init: _init,
-    log: _log
+    log: function() {
+      _log.apply(this, arguments).level('LOG').send();
+    },
+    warn: function() {
+      _log.apply(this, arguments).level('WARN').send();
+    },
+    error: function() {
+      _log.apply(this, arguments).level('ERROR').send();
+    },
+    info: function() {
+      _log.apply(this, arguments).level('INFO').send();
+    }
   };
 } (this));
