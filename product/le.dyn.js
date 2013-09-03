@@ -106,6 +106,9 @@ var LE = (function(window) {
     var _pageInfo = options.page_info;
     /** @type {string} */
     var _token = options.token;
+    /** @type {boolean} */
+    var _print = options.print;
+
     /**
      * @const
      * @type {string} */
@@ -206,6 +209,9 @@ var LE = (function(window) {
       }
 
       return {level: function(l) {
+        if (_print) {
+          console[l.toLowerCase()].call(console, data);
+        }
         data.level = l;
 
         return {send: function() {
@@ -277,11 +283,13 @@ var LE = (function(window) {
   var logger;
 
   var _init = function(options) {
+    // Default values
     var dict = {
       ssl: true,
       catchall: false,
       trace: false,
-      page_info: 'never'
+      page_info: 'never',
+      print: false
     };
 
     if (typeof options === "object")
