@@ -245,5 +245,57 @@ wru.test([
 
       LE.log("hi");
     }
+  },
+  {
+    name: 'test LOG level',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', page_info: 'per-page'});
+
+      XMLHttpRequest.spy = function(data) {
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed.level === 'LOG');
+      }
+
+      LE.log("hi");
+    }
+  },
+  {
+    name: 'test INFO level',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', page_info: 'per-page'});
+
+      XMLHttpRequest.spy = function(data) {
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed.level === 'INFO');
+      }
+
+      LE.info("hi");
+    }
+  },
+  {
+    name: 'test WARN level',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', page_info: 'per-page'});
+
+      XMLHttpRequest.spy = function(data) {
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed.level === 'WARN');
+      }
+
+      LE.warn("hi");
+    }
+  },
+  {
+    name: 'test ERROR level',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', page_info: 'per-page'});
+
+      XMLHttpRequest.spy = function(data) {
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed.level === 'ERROR');
+      }
+
+      LE.error("hi");
+    }
   }
 ]);
