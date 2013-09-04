@@ -314,7 +314,7 @@ var LE = (function(window) {
     var dict = {
       ssl: true,
       catchall: false,
-      trace: false,
+      trace: true,
       page_info: 'never',
       print: false
     };

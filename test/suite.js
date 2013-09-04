@@ -17,7 +17,7 @@ wru.test([
       XMLHttpRequest.spy = function(data) {
         wru.assert(true, data === '{\"event\":\"Hello, world!\",\"level\":\"LOG\"}');
       }
-      LE.init({token:'foo'});
+      LE.init({token:'foo', trace: false});
       LE.log("Hello, world!");
     }
   },
