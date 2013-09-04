@@ -1,4 +1,5 @@
 var window = {};
+var document = {cookie: ""};
 
 var XMLHttpRequest = function() {
   var that = this;
@@ -18,4 +19,3 @@ var XMLHttpRequest = function() {
 XMLHttpRequest.spy = function() {};
 
 window.XMLHttpRequest = XMLHttpRequest;
-

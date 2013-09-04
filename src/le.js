@@ -54,6 +54,32 @@ var LE = (function(window) {
       window.onerror = newHandler;
     }
 
+    var _getCookie = function(key) {
+      var cookies = document.cookie.split("; ");
+      var value = null;
+      for (var i in cookies) {
+        var tuple = cookies[i].split("=");
+        if (tuple[0] === key && tuple.length === 2) {
+          value = tuple[1];
+          break;
+        }
+      }
+      return value;
+    }
+
+    var _setCookie = function(key, value) {
+      var date = new Date();
+      date.setFullYear(2100);
+      var cookie = key + "=" + value + "; expires=" + date.toGMTString() + "; path=/";
+      document.cookie = cookie;
+      return value;
+    }
+
+    var _getTrace = function() {
+      var trace = _getCookie("__le_trace") || _setCookie("__le_trace", _traceCode);
+      return trace;
+    }
+
     var _agentInfo = function() {
       var nav = window.navigator || {userAgent: "unknown"};
       var screen = window.screen || {width: "unknown", height: "unknown"};
@@ -108,6 +134,7 @@ var LE = (function(window) {
       return raw;
     }
 
+    // Single arg stops the compiler arity warning
     var _rawLog = function(msg) {
       var event = _getEvent.apply(this, arguments);
 
@@ -123,7 +150,7 @@ var LE = (function(window) {
 
       // Add trace code if required
       if (_doTrace) {
-        data.trace = _traceCode;
+        data.trace = _getTrace();
       }
 
       return {level: function(l) {

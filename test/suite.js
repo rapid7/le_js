@@ -191,6 +191,18 @@ wru.test([
     }
   },
   {
+    name: 'test trace code persistence',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN', trace: true});
+
+      XMLHttpRequest.spy = function(data) {
+        wru.assert(true, document.cookie.length != 0);
+      }
+
+      LE.log("hi");
+    }
+  },
+  {
     name: 'test page info when never',
     test: function() {
       LE.init({token: 'SOME-TOKEN', page_info: 'never'});
