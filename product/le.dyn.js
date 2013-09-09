@@ -131,7 +131,8 @@ var LE = (function(window) {
       var oldHandler = window.onerror;
       var newHandler = function(msg, url, line) {
         _rawLog({error: msg, line: line, url: url});
-        if (oldHandler) oldHandler(msg, url, line);
+        if (oldHandler) return oldHandler(msg, url, line).level('ERROR').send();
+        return true;
       }
       window.onerror = newHandler;
     }
