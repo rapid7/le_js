@@ -25,8 +25,8 @@ Usage
 ```html
 <html lang="en">
   <head>
-    <title>your page</title>
-    <script src="/js/le.min.js"></script>
+    <title>Your page</title>
+    <script src="/js/le-VERSION.min.js"></script>
     <script>
       // Create a log stream...
       LE.init('YOUR-TOKEN');
