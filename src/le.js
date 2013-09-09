@@ -155,7 +155,7 @@ var LE = (function(window) {
       }
 
       return {level: function(l) {
-        if (_print) {
+        if (_print && typeof console !== "undefined") {
           console[l.toLowerCase()].call(console, data);
         }
         data.level = l;
