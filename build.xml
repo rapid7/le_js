@@ -92,7 +92,7 @@
     </copy>
 
     <replace file="build/le.js"
-             token="localhost:8080"
+             token="localhost:8080/v1"
              value="${api.endpoint}"/>
 
     <jscomp compilationLevel="simple" warning="verbose"
@@ -130,5 +130,8 @@
       <filelist dir="product" files="le.js"/>
       <filelist dir="deps" files="common.js"/>
     </concat>
+
+    <!-- Replace the product readme -->
+    <copy file="deps/template" tofile="product/README.md"/>
   </target>
 </project>

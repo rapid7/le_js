@@ -24,10 +24,13 @@ var LE = (function(window) {
     var _pageInfo = options.page_info;
     /** @type {string} */
     var _token = options.token;
+    /** @type {boolean} */
+    var _print = options.print;
+
     /**
      * @const
      * @type {string} */
-    var _endpoint = "localhost:8080";
+    var _endpoint = "localhost:8080/v1";
 
     /**
      * Flag to prevent further invocations on network err
@@ -46,9 +49,36 @@ var LE = (function(window) {
       var oldHandler = window.onerror;
       var newHandler = function(msg, url, line) {
         _rawLog({error: msg, line: line, url: url});
-        if (oldHandler) oldHandler(msg, url, line);
+        if (oldHandler) return oldHandler(msg, url, line).level('ERROR').send();
+        return true;
       }
       window.onerror = newHandler;
+    }
+
+    var _getCookie = function(key) {
+      var cookies = document.cookie.split("; ");
+      var value = null;
+      for (var i in cookies) {
+        var tuple = cookies[i].split("=");
+        if (tuple[0] === key && tuple.length === 2) {
+          value = tuple[1];
+          break;
+        }
+      }
+      return value;
+    }
+
+    var _setCookie = function(key, value) {
+      var date = new Date();
+      date.setFullYear(2100);
+      var cookie = key + "=" + value + "; expires=" + date.toGMTString() + "; path=/";
+      document.cookie = cookie;
+      return value;
+    }
+
+    var _getTrace = function() {
+      var trace = _getCookie("__le_trace") || _setCookie("__le_trace", _traceCode);
+      return trace;
     }
 
     var _agentInfo = function() {
@@ -76,6 +106,9 @@ var LE = (function(window) {
       }
     }
 
+    // Traverses a log object,
+    // turning nullish values into
+    // string literals
     var _serialize = function(obj) {
       if (_isComplex(obj)) {
         for (var o in obj) {
@@ -87,12 +120,9 @@ var LE = (function(window) {
       }
     }
 
-    // Single param stops the compiler
-    // complaining about wrong arity.
-    var _rawLog = function(msg) {
+    var _getEvent = function() {
       var raw = null;
       var args = Array.prototype.slice.call(arguments);
-
       if (args.length === 0) {
         throw new Error("No arguments!");
       } else if (args.length === 1) {
@@ -102,8 +132,14 @@ var LE = (function(window) {
         // e.g. _rawLog("some text ", x, " ...", 1);
         raw = _serialize(args).join(" ");
       }
+      return raw;
+    }
 
-      var data = {event: raw};
+    // Single arg stops the compiler arity warning
+    var _rawLog = function(msg) {
+      var event = _getEvent.apply(this, arguments);
+
+      var data = {event: event};
 
       // Add agent info if required
       if (_pageInfo !== 'never') {
@@ -115,16 +151,25 @@ var LE = (function(window) {
 
       // Add trace code if required
       if (_doTrace) {
-        data.tracecode = _traceCode;
+        data.trace = _getTrace();
       }
 
-      var serialized = JSON.stringify(_serialize(data));
+      return {level: function(l) {
+        if (_print && typeof console !== "undefined") {
+          console[l.toLowerCase()].call(console, data);
+        }
+        data.level = l;
 
-      if (_active) {
-        _backlog.push(serialized);
-      } else {
-        _apiCall(_token, serialized);
-      }
+        return {send: function() {
+          var serialized = JSON.stringify(_serialize(data));
+
+          if (_active) {
+            _backlog.push(serialized);
+          } else {
+            _apiCall(_token, serialized);
+          }
+        }};
+      }};
     }
 
     /** @expose */
@@ -149,9 +194,18 @@ var LE = (function(window) {
       if (_shouldCall) {
         request.onreadystatechange = function() {
           if (request.readyState === 4) {
+            // Handle any errors
             if (request.status >= 400) {
-              console.warn("Couldn't submit events.");
+              console.error("Couldn't submit events.");
+              if (request.status === 410) {
+                // This API version has been phased out
+                console.warn("This version of le_js is no longer supported!");
+              }
             } else {
+              if (request.status === 301) {
+                // Server issued a deprecation warning
+                console.warn("This version of le_js is deprecated! Consider upgrading.");
+              }
               if (_backlog.length > 0) {
                 // Submit the next event in the backlog
                 _apiCall(token, _backlog.shift());
@@ -169,21 +223,28 @@ var LE = (function(window) {
         request.send(data);
       }
     }
+
   }
 
   var logger;
 
   var _init = function(options) {
-    var dict = {ssl: true};
+    // Default values
+    var dict = {
+      ssl: true,
+      catchall: false,
+      trace: true,
+      page_info: 'never',
+      print: false
+    };
+
     if (typeof options === "object")
       for (var k in options)
         dict[k] = options[k];
     else if (typeof options === "string")
       dict.token = options;
-
-    dict.catchall = dict.catchall || false;
-    dict.trace = dict.trace || false;
-    dict.page_info = dict.page_info || 'never';
+    else
+      throw new Error("Invalid parameters for init()");
 
     if (dict.token === undefined) {
       throw new Error("Token not present.");
@@ -196,13 +257,25 @@ var LE = (function(window) {
 
   var _log = function() {
     if (logger) {
-      logger.log.apply(this, arguments);
+      return logger.log.apply(this, arguments);
     } else
       throw new Error("You must call LE.init(...) first.");
   }
 
+  // The public interface
   return {
     init: _init,
-    log: _log
+    log: function() {
+      _log.apply(this, arguments).level('LOG').send();
+    },
+    warn: function() {
+      _log.apply(this, arguments).level('WARN').send();
+    },
+    error: function() {
+      _log.apply(this, arguments).level('ERROR').send();
+    },
+    info: function() {
+      _log.apply(this, arguments).level('INFO').send();
+    }
   };
 } (this));
