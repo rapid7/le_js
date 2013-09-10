@@ -238,6 +238,11 @@ var LE = (function(window) {
                 }
             }
 
+            if (typeof document !== "undefined") {
+                document.location = document.location || {};
+                data.path = document.location.pathname;
+            }
+
             // Add trace code if required
             if (_doTrace) {
                 data.trace = _getTrace();
