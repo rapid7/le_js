@@ -15,7 +15,8 @@ wru.test([
     name: 'submit simple string event',
     test: function() {
       XMLHttpRequest.spy = function(data) {
-        wru.assert(true, data === '{\"event\":\"Hello, world!\",\"level\":\"LOG\"}');
+        wru.assert(true, data ===
+          '{\"event\":\"Hello, world!\",\"level\":\"LOG\"}');
       }
       LE.init({token:'foo', trace: false});
       LE.log("Hello, world!");

@@ -107,7 +107,6 @@ var LE = (function(window) {
         var _token = options.token;
         /** @type {boolean} */
         var _print = options.print;
-
         /**
          * @const
          * @type {string} */
