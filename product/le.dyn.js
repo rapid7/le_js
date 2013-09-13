@@ -99,21 +99,13 @@ var LE = (function(window) {
          * @const
          * @type {string} */
         var _traceCode = (Math.random() + Math.PI).toString(36).substring(2, 10);
-        /**
-         * @const
-         * @type {boolean} */
+        /** @type {boolean} */
         var _doTrace = options.trace;
-        /**
-         * @const
-         * @type {string} */
+        /** @type {string} */
         var _pageInfo = options.page_info;
-        /**
-         * @const
-         * @type {string} */
+        /** @type {string} */
         var _token = options.token;
-        /**
-         * @const
-         * @type {boolean} */
+        /** @type {boolean} */
         var _print = options.print;
         /**
          * @const
@@ -239,8 +231,9 @@ var LE = (function(window) {
             }
 
             if (typeof document !== "undefined") {
-                document.location = document.location || {};
-                data.path = document.location.pathname;
+                if (typeof document.location !== "undefined") {
+                    data.path = document.location.pathname;
+                }
             }
 
             // Add trace code if required
