@@ -46,7 +46,7 @@ var LE = (function(window) {
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
-                _rawLog({error: msg, line: line, url: url}).level('ERROR').send();
+                _rawLog({error: msg, line: line, location: url}).level('ERROR').send();
                 if (oldHandler)
                     return oldHandler(msg, url, line);
                 return true;
@@ -54,41 +54,18 @@ var LE = (function(window) {
             window.onerror = newHandler;
         }
 
-        var _getCookie = function(key) {
-            var cookies = document.cookie.split("; ");
-            var value = null;
-            for (var i in cookies) {
-                var tuple = cookies[i].split("=");
-                if (tuple[0] === key && tuple.length === 2) {
-                    value = tuple[1];
-                    break;
-                }
-            }
-            return value;
-        };
-
-        var _setCookie = function(key, value) {
-            var date = new Date();
-            date.setFullYear(2100);
-            var cookie = key + "=" + value + "; expires=" + date.toGMTString() + "; path=/";
-            document.cookie = cookie;
-            return value;
-        };
-
-        var _getTrace = function() {
-            var trace = _getCookie("__le_trace") || _setCookie("__le_trace", _traceCode);
-            return trace;
-        };
-
         var _agentInfo = function() {
-            var nav = window.navigator || {userAgent: "unknown"};
-            var screen = window.screen || {width: "unknown", height: "unknown"};
-
+            var navigator = window.navigator || {};
+            var screen = window.screen || {};
+            var location = window.location || {};
             return {
-                name: nav.userAgent,
+                name: navigator.userAgent,
                 screenWidth: screen.width,
-                screenHeight: screen.height
-            };
+                screenHeight: screen.height,
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight,
+                url: location.pathname
+            }
         };
 
         var _isComplex = function(obj) {
@@ -129,7 +106,10 @@ var LE = (function(window) {
             } else {
                 // Handle a variadic overload,
                 // e.g. _rawLog("some text ", x, " ...", 1);
-                raw = _serialize(args).join(" ");
+                for (var i in args) {
+                    args[i] = JSON.stringify(_serialize(args[i]));
+                }
+                raw = args.join(" ");
             }
             return raw;
         };
@@ -142,21 +122,16 @@ var LE = (function(window) {
 
             // Add agent info if required
             if (_pageInfo !== 'never') {
-                if (_pageInfo === 'per-entry' || !_sentPageInfo) {
-                    data.agent = _agentInfo();
+                if (!_sentPageInfo) {
+//                    data.agent = _agentInfo();
                     _sentPageInfo = true;
-                }
-            }
-
-            if (typeof document !== "undefined") {
-                if (typeof document.location !== "undefined") {
-                    data.path = document.location.pathname;
+                  _rawLog(_agentInfo()).level('LOG').send();
                 }
             }
 
             // Add trace code if required
             if (_doTrace) {
-                data.trace = _getTrace();
+                data.trace = _traceCode;
             }
 
             return {level: function(l) {

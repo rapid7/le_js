@@ -136,41 +136,21 @@ var LE = (function(window) {
             window.onerror = newHandler;
         }
 
-        var _getCookie = function(key) {
-            var cookies = document.cookie.split("; ");
-            var value = null;
-            for (var i in cookies) {
-                var tuple = cookies[i].split("=");
-                if (tuple[0] === key && tuple.length === 2) {
-                    value = tuple[1];
-                    break;
-                }
-            }
-            return value;
-        };
-
-        var _setCookie = function(key, value) {
-            var date = new Date();
-            date.setFullYear(2100);
-            var cookie = key + "=" + value + "; expires=" + date.toGMTString() + "; path=/";
-            document.cookie = cookie;
-            return value;
-        };
-
-        var _getTrace = function() {
-            var trace = _getCookie("__le_trace") || _setCookie("__le_trace", _traceCode);
-            return trace;
-        };
-
         var _agentInfo = function() {
-            var nav = window.navigator || {userAgent: "unknown"};
-            var screen = window.screen || {width: "unknown", height: "unknown"};
-
-            return {
-                name: nav.userAgent,
-                screenWidth: screen.width,
-                screenHeight: screen.height
-            };
+            if (typeof "window" !== undefined) {
+                var navigator = window.navigator || {};
+                window.screen = window.screen || {};
+                window.location = window.location || {};
+                return {
+                    path: window.location.pathname,
+                    name: navigator.userAgent,
+                    screenWidth: window.screen.width,
+                    screenHeight: window.screen.height,
+                    windowWidth: window.innerWidth,
+                    windowHeight: window.innerHeight
+                };
+            } else
+                return {};
         };
 
         var _isComplex = function(obj) {
@@ -218,27 +198,19 @@ var LE = (function(window) {
 
         // Single arg stops the compiler arity warning
         var _rawLog = function(msg) {
+            // Send agent info first if required
+            if (_pageInfo !== 'never' && !_sentPageInfo) {
+                _sentPageInfo = true;
+                _rawLog(_agentInfo()).level('LOG').send();
+            }
+
             var event = _getEvent.apply(this, arguments);
 
             var data = {event: event};
 
-            // Add agent info if required
-            if (_pageInfo !== 'never') {
-                if (_pageInfo === 'per-entry' || !_sentPageInfo) {
-                    data.agent = _agentInfo();
-                    _sentPageInfo = true;
-                }
-            }
-
-            if (typeof document !== "undefined") {
-                if (typeof document.location !== "undefined") {
-                    data.path = document.location.pathname;
-                }
-            }
-
             // Add trace code if required
             if (_doTrace) {
-                data.trace = _getTrace();
+                data.trace = _traceCode;
             }
 
             return {level: function(l) {

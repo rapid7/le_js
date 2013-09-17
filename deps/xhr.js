@@ -11,6 +11,8 @@ var XMLHttpRequest = function() {
   this.setRequestHeader = function() {};
   this.send = function(data) {
     that.data = data;
+    that.readyState = 4;
+    that.status = 204;
     XMLHttpRequest.spy(data);
   };
   this.data = null;
