@@ -46,9 +46,9 @@ var LE = (function(window) {
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
-                _rawLog({error: msg, line: line, url: url});
+                _rawLog({error: msg, line: line, url: url}).level('ERROR').send();
                 if (oldHandler)
-                    return oldHandler(msg, url, line).level('ERROR').send();
+                    return oldHandler(msg, url, line);
                 return true;
             };
             window.onerror = newHandler;

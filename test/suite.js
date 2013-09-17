@@ -86,10 +86,25 @@ wru.test([
     }
   },
   {
-    name: 'test catchall handler works',
+    name: 'test catchall handler assigned',
     test: function() {
       LE.init({token: 'SOME-TOKEN', catchall: true});
       wru.assert(true, onerror !== undefined);
+    }
+  },
+  {
+    name: 'test catchall handler sends POST request',
+    test: function() {
+      onerror = null;
+      LE.init({token: 'SOME-TOKEN', catchall: true});
+      var didSend = false;
+      XMLHttpRequest.spy = function(data) {
+        var parsed = JSON.parse(data);
+        didSend = true;
+      }
+
+      onerror(1,2,3);
+      wru.assert(true, didSend);
     }
   },
   {
