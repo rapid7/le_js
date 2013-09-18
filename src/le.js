@@ -80,34 +80,6 @@ var LE = (function(window) {
             }
         };
 
-        var _isComplex = function(obj) {
-            return (typeof obj === "object" || Array.isArray(obj)) && obj !== null;
-        };
-
-        var _prettyPrint = function(obj) {
-            if (typeof obj === "undefined") {
-                return "undefined";
-            } else if (obj === null) {
-                return "null";
-            } else {
-                return obj;
-            }
-        };
-
-        // Traverses a log object,
-        // turning nullish values into
-        // string literals
-        var _serialize = function(obj) {
-            if (_isComplex(obj)) {
-                for (var o in obj) {
-                    obj[o] = _serialize(obj[o]);
-                }
-                return obj;
-            } else {
-                return _prettyPrint(obj);
-            }
-        };
-
         var _getEvent = function() {
             var raw = null;
             var args = Array.prototype.slice.call(arguments);
@@ -118,10 +90,7 @@ var LE = (function(window) {
             } else {
                 // Handle a variadic overload,
                 // e.g. _rawLog("some text ", x, " ...", 1);
-                for (var i in args) {
-                    args[i] = _serialize(args[i]);
-                }
-                raw = args.join(" ");
+              raw = args;
             }
             return raw;
         };
@@ -154,7 +123,21 @@ var LE = (function(window) {
                     data.level = l;
 
                     return {send: function() {
-                            var serialized = JSON.stringify(_serialize(data));
+                        var cache = [];
+                        var serialized = JSON.stringify(data, function(key, value) {
+                              if (typeof value === "undefined") {
+                                return "undefined";
+                              } else if (typeof value === "object" && value !== null) {
+                                if (cache.indexOf(value) !== -1) {
+                                  // We've seen this object before;
+                                  // return a placeholder instead to prevent
+                                  // cycles
+                                  return "<?>";
+                                }
+                                cache.push(value);
+                              }
+                          return value;
+                        });
 
                             if (_active) {
                                 _backlog.push(serialized);

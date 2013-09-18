@@ -27,18 +27,51 @@ wru.test([
     test: function() {
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
-        wru.assert(true, parsed['event'] === 'Hello, 1 more...');
+        var expected = ["Hello,", 1, "more..."];
+
+        for (var element in expected) {
+          wru.assert(true, parsed['event'][element] === expected[element]);
+        }
       }
       LE.init({token:'foo'});
       LE.log("Hello,", 1, "more...");
     }
   },
   {
-    name: 'submit array of strings',
+    name: 'submit interpolated event with nested object',
+    test: function() {
+      var x = {test: true, key: "spaced value"};
+
+      XMLHttpRequest.spy = function(data) {
+        var parsed = JSON.parse(data);
+        var expected = ["Hello", x];
+
+        for (var element in expected) {
+          if (typeof expected[element] === "object") {
+            var obj = expected[element];
+            for (var k in obj) {
+              wru.assert(true, parsed['event'][element][k] === obj[k]);
+            }
+          } else {
+            wru.assert(true, parsed['event'][element] === expected[element]);
+          }
+        }
+      }
+      LE.init({token:'foo'});
+
+      LE.log("Hello", x);
+    }
+  },
+  {
+    name: 'submit variadic list of strings',
     test: function() {
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
-        wru.assert(true, parsed['event'] === 'Hello, logger');
+        var expected = ["Hello,", "logger"];
+
+        for (var element in expected) {
+          wru.assert(true, parsed['event'][element] === expected[element]);
+        }
       }
       LE.init({token:'foo'});
       LE.log("Hello,", "logger");
@@ -114,7 +147,11 @@ wru.test([
 
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
-        wru.assert(true, parsed['event'] === 'This is null null');
+        var expected = ["This is null", null];
+
+        for (var element in expected) {
+          wru.assert(true, parsed['event'][element] === expected[element]);
+        }
       }
 
       LE.log("This is null", null);
@@ -127,7 +164,11 @@ wru.test([
 
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
-        wru.assert(true, parsed['event'] === 'This is null undefined');
+        var expected = ["This is null", "undefined"];
+
+        for (var element in expected) {
+          wru.assert(true, parsed['event'][element] === expected[element]);
+        }
       }
 
       LE.log("This is null", undefined);
@@ -141,7 +182,7 @@ wru.test([
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
         wru.assert(true, parsed.event['some'] === 'data');
-        wru.assert(true, parsed.event['complex']['a'] === 'null');
+        wru.assert(true, parsed.event['complex']['a'] === null);
         wru.assert(true, parsed.event['complex']['b'] === 'undefined');
       }
 
@@ -164,7 +205,7 @@ wru.test([
         wru.assert(true, parsed.event[0] === 'some');
         wru.assert(true, parsed.event[1] === 'event');
         wru.assert(true, typeof parsed.event[2] === "object");
-        wru.assert(true, parsed.event[2][1] === "null");
+        wru.assert(true, parsed.event[2][1] === null);
       }
 
       LE.log(["some", "event", ["nested", null]]);
@@ -177,7 +218,7 @@ wru.test([
 
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
-        wru.assert(true, parsed.event['complex']['nested'][0] === "null");
+        wru.assert(true, parsed.event['complex']['nested'][0] === null);
         wru.assert(true, parsed.event['complex']['nested'][1][0] === "again");
         wru.assert(true, parsed.event['complex']['some'] === 'undefined');
       }
@@ -328,6 +369,21 @@ wru.test([
       }
 
       LE.error("hi");
+    }
+  },
+  {
+    name: 'test cyclic value exclusion',
+    test: function() {
+      LE.init({token: 'SOME-TOKEN'});
+
+      XMLHttpRequest.spy = function(data) {
+        var parsed = JSON.parse(data);
+        wru.assert(true, parsed['event']['y'] === "<?>");
+      }
+
+      var x = {};
+      x.y = x;
+      LE.log(x);
     }
   }
 ]);
