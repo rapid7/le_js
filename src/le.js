@@ -107,7 +107,7 @@ var LE = (function(window) {
                 // Handle a variadic overload,
                 // e.g. _rawLog("some text ", x, " ...", 1);
                 for (var i in args) {
-                    args[i] = JSON.stringify(_serialize(args[i]));
+                    args[i] = _serialize(args[i]);
                 }
                 raw = args.join(" ");
             }
@@ -123,7 +123,6 @@ var LE = (function(window) {
             // Add agent info if required
             if (_pageInfo !== 'never') {
                 if (!_sentPageInfo) {
-//                    data.agent = _agentInfo();
                     _sentPageInfo = true;
                   _rawLog(_agentInfo()).level('LOG').send();
                 }
