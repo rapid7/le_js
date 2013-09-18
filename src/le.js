@@ -134,9 +134,11 @@ var LE = (function(window) {
 
             // Add agent info if required
             if (_pageInfo !== 'never') {
-                if (!_sentPageInfo) {
+                if (!_sentPageInfo || _pageInfo === 'per-entry') {
                     _sentPageInfo = true;
-                  _rawLog(_agentInfo()).level('LOG').send();
+                    if (typeof event.screen === "undefined" &&
+                        typeof event.browser === "undefined")
+                      _rawLog(_agentInfo()).level('PAGE').send();
                 }
             }
 
@@ -146,7 +148,7 @@ var LE = (function(window) {
             }
 
             return {level: function(l) {
-                    if (_print && typeof console !== "undefined") {
+                    if (_print && typeof console !== "undefined" && l !== 'PAGE') {
                         console[l.toLowerCase()].call(console, data);
                     }
                     data.level = l;
@@ -165,7 +167,6 @@ var LE = (function(window) {
 
         /** @expose */
         this.log = _rawLog;
-        this.pageInfo = _agentInfo();
 
         var _apiCall = function(token, data) {
             _active = true;
@@ -247,7 +248,6 @@ var LE = (function(window) {
         return true;
     };
 
-    // single arg to stop compiler complaining
     var _log = function(msg) {
         if (logger) {
             return logger.log.apply(this, arguments);
@@ -269,9 +269,6 @@ var LE = (function(window) {
         },
         info: function() {
             _log.apply(this, arguments).level('INFO').send();
-        },
-        pageInfo: function() {
-            _log(logger.pageInfo).level('PAGE').send();
         }
     };
 }(this));
