@@ -128,7 +128,7 @@ var LE = (function(window) {
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
-                _rawLog({error: msg, line: line, url: url}).level('ERROR').send();
+                _rawLog({error: msg, line: line, location: url}).level('ERROR').send();
                 if (oldHandler)
                     return oldHandler(msg, url, line);
                 return true;
@@ -137,20 +137,29 @@ var LE = (function(window) {
         }
 
         var _agentInfo = function() {
-            if (typeof "window" !== undefined) {
-                var navigator = window.navigator || {};
-                window.screen = window.screen || {};
-                window.location = window.location || {};
-                return {
-                    path: window.location.pathname,
-                    name: navigator.userAgent,
-                    screenWidth: window.screen.width,
-                    screenHeight: window.screen.height,
-                    windowWidth: window.innerWidth,
-                    windowHeight: window.innerHeight
-                };
-            } else
-                return {};
+            var nav = window.navigator || {doNotTrack: undefined};
+            var screen = window.screen || {};
+            var location = window.location || {};
+
+            return {
+              url: location.pathname,
+              referrer: document.referrer,
+              screen: {
+                width: screen.width,
+                height: screen.height
+              },
+              window: {
+                width: window.innerWidth,
+                height: window.innerHeight
+              },
+              browser: {
+                name: nav.appName,
+                version: nav.appVersion,
+                cookie_enabled: nav.cookieEnabled,
+                do_not_track: nav.doNotTrack
+              },
+              platform: nav.platform
+            }
         };
 
         var _isComplex = function(obj) {
@@ -191,22 +200,27 @@ var LE = (function(window) {
             } else {
                 // Handle a variadic overload,
                 // e.g. _rawLog("some text ", x, " ...", 1);
-                raw = _serialize(args).join(" ");
+                for (var i in args) {
+                    args[i] = _serialize(args[i]);
+                }
+                raw = args.join(" ");
             }
             return raw;
         };
 
         // Single arg stops the compiler arity warning
         var _rawLog = function(msg) {
-            // Send agent info first if required
-            if (_pageInfo !== 'never' && !_sentPageInfo) {
-                _sentPageInfo = true;
-                _rawLog(_agentInfo()).level('LOG').send();
-            }
-
             var event = _getEvent.apply(this, arguments);
 
             var data = {event: event};
+
+            // Add agent info if required
+            if (_pageInfo !== 'never') {
+                if (!_sentPageInfo) {
+                    _sentPageInfo = true;
+                  _rawLog(_agentInfo()).level('LOG').send();
+                }
+            }
 
             // Add trace code if required
             if (_doTrace) {
@@ -233,6 +247,7 @@ var LE = (function(window) {
 
         /** @expose */
         this.log = _rawLog;
+        this.pageInfo = _agentInfo();
 
         var _apiCall = function(token, data) {
             _active = true;
@@ -314,7 +329,8 @@ var LE = (function(window) {
         return true;
     };
 
-    var _log = function() {
+    // single arg to stop compiler complaining
+    var _log = function(msg) {
         if (logger) {
             return logger.log.apply(this, arguments);
         } else
@@ -335,6 +351,9 @@ var LE = (function(window) {
         },
         info: function() {
             _log.apply(this, arguments).level('INFO').send();
+        },
+        pageInfo: function() {
+            _log(logger.pageInfo).level('PAGE').send();
         }
     };
 }(this));

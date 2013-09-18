@@ -241,11 +241,9 @@ wru.test([
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
         wru.assert(true, (typeof parsed['event'] !== "undefined"));
-        wru.assert(true, parsed['event']['name'] === "undefined");
-        wru.assert(true, parsed['event']['screenWidth'] === "undefined");
-        wru.assert(true, parsed['event']['screenHeight'] === "undefined");
-        wru.assert(true, parsed['event']['windowWidth'] === "undefined");
-        wru.assert(true, parsed['event']['windowHeight'] === "undefined");
+        wru.assert(true, parsed['event']['screen'] !== "undefined");
+        wru.assert(true, parsed['event']['window'] !== "undefined");
+        wru.assert(true, parsed['event']['browser'] !== "undefined");
       }
 
       LE.log("hi");
@@ -261,17 +259,16 @@ wru.test([
         var parsed = JSON.parse(data);
 
         wru.assert(true, (typeof parsed['event'] !== "undefined"));
-        wru.assert(true, parsed['event']['name'] === "undefined");
-        wru.assert(true, parsed['event']['screenWidth'] === "undefined");
-        wru.assert(true, parsed['event']['screenHeight'] === "undefined");
-        wru.assert(true, parsed['event']['windowWidth'] === "undefined");
-        wru.assert(true, parsed['event']['windowHeight'] === "undefined");
+        wru.assert(true, parsed['event']['screen'] !== "undefined");
+        wru.assert(true, parsed['event']['window'] !== "undefined");
+        wru.assert(true, parsed['event']['browser'] !== "undefined");
       }
 
       LE.log("hi");
 
       // agent info has been sent already;
       // we shouldn't expect it again
+      // TODO: need to mock onreadystatechange() invocation
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
         wru.assert(true, (typeof parsed['event'] !== "undefined"));

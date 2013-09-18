@@ -55,16 +55,28 @@ var LE = (function(window) {
         }
 
         var _agentInfo = function() {
-            var navigator = window.navigator || {};
+            var nav = window.navigator || {doNotTrack: undefined};
             var screen = window.screen || {};
             var location = window.location || {};
+
             return {
-                name: navigator.userAgent,
-                screenWidth: screen.width,
-                screenHeight: screen.height,
-                windowWidth: window.innerWidth,
-                windowHeight: window.innerHeight,
-                url: location.pathname
+              url: location.pathname,
+              referrer: document.referrer,
+              screen: {
+                width: screen.width,
+                height: screen.height
+              },
+              window: {
+                width: window.innerWidth,
+                height: window.innerHeight
+              },
+              browser: {
+                name: nav.appName,
+                version: nav.appVersion,
+                cookie_enabled: nav.cookieEnabled,
+                do_not_track: nav.doNotTrack
+              },
+              platform: nav.platform
             }
         };
 
@@ -153,6 +165,7 @@ var LE = (function(window) {
 
         /** @expose */
         this.log = _rawLog;
+        this.pageInfo = _agentInfo();
 
         var _apiCall = function(token, data) {
             _active = true;
@@ -234,7 +247,8 @@ var LE = (function(window) {
         return true;
     };
 
-    var _log = function() {
+    // single arg to stop compiler complaining
+    var _log = function(msg) {
         if (logger) {
             return logger.log.apply(this, arguments);
         } else
@@ -255,6 +269,9 @@ var LE = (function(window) {
         },
         info: function() {
             _log.apply(this, arguments).level('INFO').send();
+        },
+        pageInfo: function() {
+            _log(logger.pageInfo).level('PAGE').send();
         }
     };
 }(this));
