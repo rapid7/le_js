@@ -200,17 +200,32 @@ var LE = (function(window) {
 
             return {level: function(l) {
                     if (_print && typeof console !== "undefined" && l !== 'PAGE') {
+                      try {
                         console[l.toLowerCase()].call(console, data);
+                      } catch (ex) {
+                        // IE compat fix
+                        console.log(data);
+                      }
                     }
                     data.level = l;
 
                     return {send: function() {
                         var cache = [];
                         var serialized = JSON.stringify(data, function(key, value) {
+
+                          // cross-browser indexOf fix
+                          var _indexOf = function(array, obj) {
+                            for (var i = 0; i < array.length; i++) {
+                              if (obj === array[i]) {
+                                return i;
+                              }
+                            }
+                            return -1;
+                          }
                               if (typeof value === "undefined") {
                                 return "undefined";
                               } else if (typeof value === "object" && value !== null) {
-                                if (cache.indexOf(value) !== -1) {
+                                if (_indexOf(cache, value) !== -1) {
                                   // We've seen this object before;
                                   // return a placeholder instead to prevent
                                   // cycles
