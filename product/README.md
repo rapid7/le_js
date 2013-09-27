@@ -6,7 +6,7 @@ Production builds live in here.
 Contents
 --------
 
-Several files are produced in the build. You'll probably just want to use __le.min.js__, however.
+Several files are produced in the build. Normally you'll just want to use __le.min.js__ on your site.
 
 * __le.ls__: JS client library, unminified
 * __le.min.js__: JS client library, minified
