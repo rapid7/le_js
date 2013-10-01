@@ -117,7 +117,14 @@ var LE = (function(window) {
          ** @type {boolean} */
         var _shouldCall = true;
         /** @type {boolean} */
-        var _SSL = options.ssl;
+        var _SSL = function() {
+            if (typeof XDomainRequest === "undefined") {
+                return options.ssl;
+            }
+            // If we're relying on XDomainRequest, we
+            // must adhere to the page's encryption scheme.
+            return window.location.protocol === "https" ? true : false;
+        }();
         /** @type {Array.<string>} */
         var _backlog = [];
         /** @type {boolean} */
@@ -310,7 +317,6 @@ var LE = (function(window) {
                 request.send(data);
             }
         };
-
     }
 
     var logger;
