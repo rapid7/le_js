@@ -171,19 +171,20 @@ var LE = (function(window) {
 
             // Obtain a browser-specific XHR object
             var _getAjaxObject = function() {
-                if (window.ActiveXObject) {
-                    window.XMLHttpRequest = function() {
-                        // IE6 compat
-                        return new ActiveXObject('Microsoft.XMLHTTP');
-                    };
-                }
-                return new XMLHttpRequest();
+              if (typeof XDomainRequest !== "undefined") {
+                // We're using IE8/9
+                return new XDomainRequest();
+              }
+              return new XMLHttpRequest();
             };
 
             var request = _getAjaxObject();
 
             if (_shouldCall) {
-                request.onreadystatechange = function() {
+                if (request.constructor === XMLHttpRequest) {
+                    // Currently we don't support fine-grained error
+                    // handling in older versions of IE
+                    request.onreadystatechange = function() {
                     if (request.readyState === 4) {
                         // Handle any errors
                         if (request.status >= 400) {
@@ -206,11 +207,24 @@ var LE = (function(window) {
                         }
                     }
 
-                };
+                    }
+                } else {
+                  request.onload = function() {
+                    if (_backlog.length > 0) {
+                      // Submit the next event in the backlog
+                      _apiCall(token, _backlog.shift());
+                    } else {
+                      _active = false;
+                    }
+                  }
+                }
+
                 var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
                 request.open("POST", uri, true);
-                request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                request.setRequestHeader('Content-type', 'text/json');
+                if (request.constructor === XMLHttpRequest) {
+                    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    request.setRequestHeader('Content-type', 'text/json');
+                }
                 request.send(data);
             }
         };
