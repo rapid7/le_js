@@ -8,7 +8,7 @@ Client-side JavaScript logging library for [Logentries](http://www.logentries.co
 Features
 --------
 
-* Small: ~2k (minified)
+* Small: ~3k (minified)
 * Cross-browser compatible
 * No external dependencies
 * Simple API
