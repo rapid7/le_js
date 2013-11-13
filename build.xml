@@ -68,22 +68,10 @@
     </java>
   </target>
 
-  <!-- The closure compiler task doesn't behave well with
-       Ivy, so in the interim we explicitly define our
-       classpath dependencies here.
-  -->
-  <path id="compiler-cp">
-    <pathelement path="${lib}/closure-compiler-v20130603.jar"/>
-    <pathelement path="${lib}/guava-14.0.1.jar"/>
-    <pathelement path="${lib}/args4j-2.0.16.jar"/>
-    <pathelement path="${lib}/jackson-core-asl-1.9.9.jar"/>
-    <pathelement path="${lib}/json-20090211.jar"/>
-  </path>
-
   <target name="build" depends="test">
     <taskdef name="jscomp"
              classname="com.google.javascript.jscomp.ant.CompileTask"
-             classpathref="compiler-cp"/>
+             classpathref="build-classpath"/>
 
     <mkdir dir="build"/>
 
