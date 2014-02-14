@@ -123,7 +123,7 @@ var LE = (function(window) {
             }
             // If we're relying on XDomainRequest, we
             // must adhere to the page's encryption scheme.
-            return window.location.protocol === "https" ? true : false;
+            return window.location.protocol === "https:" ? true : false;
         }();
         /** @type {Array.<string>} */
         var _backlog = [];
