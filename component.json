@@ -1,0 +1,14 @@
+{
+  "name": "le_js",
+  "repo": "logentries/le_js",
+  "description": "CLient-side JavaScript logging library for Logentries",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "product/le.common.js",
+  "scripts": [
+    "product/le.common.js"
+  ]
+}
