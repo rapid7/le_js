@@ -265,7 +265,7 @@ var LE = (function(window) {
         if (dict.token === undefined) {
             throw new Error("Token not present.");
         } else {
-            logger= new LogStream(dict);
+            logger = new LogStream(dict);
         }
 
         var _log = function(msg) {
