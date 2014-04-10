@@ -1,21 +1,18 @@
-wru.test([
+var tests = [
   {
     name: 'single arg stream construction',
-    setup: reloadContext,
     test: function() {
       wru.assert(true, LE.init('TOKEN'));
     }
   },
   {
     name: 'basic stream construction with dict',
-    setup: reloadContext,
     test: function() {
       wru.assert(true, LE.init({token: 'foo'}));
     }
   },
   {
     name: 'submit simple string event',
-    setup: reloadContext,
     test: function() {
       XMLHttpRequest.spy = function(data) {
         wru.assert(true, data ===
@@ -27,7 +24,6 @@ wru.test([
   },
   {
     name: 'submit interpolated string event',
-    setup: reloadContext,
     test: function() {
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
@@ -43,7 +39,6 @@ wru.test([
   },
   {
     name: 'submit interpolated event with nested object',
-    setup: reloadContext,
     test: function() {
       var x = {test: true, key: "spaced value"};
 
@@ -69,7 +64,6 @@ wru.test([
   },
   {
     name: 'submit variadic list of strings',
-    setup: reloadContext,
     test: function() {
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
@@ -85,7 +79,6 @@ wru.test([
   },
   {
     name: 'submit object event',
-    setup: reloadContext,
     test: function() {
       XMLHttpRequest.spy = function(data) {
         var parsed = JSON.parse(data);
@@ -97,7 +90,6 @@ wru.test([
   },
   {
     name: 'init cannot work without token',
-    setup: reloadContext,
     test: function() {
       var didFail = false;
       try {
@@ -113,7 +105,6 @@ wru.test([
   },
   {
     name: 'init cannot work without token (with object param)',
-    setup: reloadContext,
     test: function() {
       var didFail = false;
       try {
@@ -129,7 +120,6 @@ wru.test([
   },
   {
     name: 'test catchall handler assigned',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN', catchall: true});
       wru.assert(true, onerror !== undefined);
@@ -137,7 +127,6 @@ wru.test([
   },
   {
     name: 'test catchall handler sends POST request',
-    setup: reloadContext,
     test: function() {
       onerror = null;
       LE.init({token: 'SOME-TOKEN', catchall: true});
@@ -153,7 +142,6 @@ wru.test([
   },
   {
     name: 'test log() with null interpolated values handled properly',
-    setup: reloadContext,
     test: function() {
       LE.init('SOME-TOKEN');
 
@@ -171,7 +159,6 @@ wru.test([
   },
   {
     name: 'test log() with undef interpolated values handled properly',
-    setup: reloadContext,
     test: function() {
       LE.init('SOME-TOKEN');
 
@@ -189,7 +176,6 @@ wru.test([
   },
   {
     name: 'test log() with object w/ nullish members handled properly',
-    setup: reloadContext,
     test: function() {
       LE.init('SOME-TOKEN');
 
@@ -211,7 +197,6 @@ wru.test([
   },
   {
     name: 'test log() w/ nullish nested array elements',
-    setup: reloadContext,
     test: function() {
       LE.init('SOME-TOKEN');
 
@@ -228,7 +213,6 @@ wru.test([
   },
   {
     name: 'test log() w/ nullish objects + arrays',
-    setup: reloadContext,
     test: function() {
       LE.init('SOME-TOKEN');
 
@@ -250,7 +234,6 @@ wru.test([
   },
   {
     name: 'test trace code',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN', trace: true});
 
@@ -266,7 +249,6 @@ wru.test([
   },
   {
     name: 'test trace code persistence',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN', trace: true});
 
@@ -280,7 +262,6 @@ wru.test([
   },
   {
     name: 'test page info when never',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN', page_info: 'never'});
 
@@ -295,7 +276,6 @@ wru.test([
   },
   {
     name: 'test page info per-entry',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN', page_info: 'per-entry'});
 
@@ -312,7 +292,6 @@ wru.test([
   },
   {
     name: 'test page info per-page',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN', page_info: 'per-page'});
 
@@ -342,7 +321,6 @@ wru.test([
   },
   {
     name: 'test LOG level',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN'});
 
@@ -356,7 +334,6 @@ wru.test([
   },
   {
     name: 'test INFO level',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN'});
 
@@ -370,7 +347,6 @@ wru.test([
   },
   {
     name: 'test WARN level',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN'});
 
@@ -384,7 +360,6 @@ wru.test([
   },
   {
     name: 'test ERROR level',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN'});
 
@@ -398,7 +373,6 @@ wru.test([
   },
   {
     name: 'test cyclic value exclusion',
-    setup: reloadContext,
     test: function() {
       LE.init({token: 'SOME-TOKEN'});
 
@@ -412,4 +386,10 @@ wru.test([
       LE.log(x);
     }
   }
-]);
+];
+
+tests.map(function(test) {
+  test.setup = reloadContext
+});
+
+wru.test(tests);
