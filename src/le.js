@@ -303,7 +303,7 @@ var LE = (function(window) {
     }
 
     var  _createLogStream = function(options) {
-        if (options.name === undefined && typeof options.name !== String)
+        if (typeof options.name !== "string")
             throw new Error("Name not present.");
         else if (loggers.hasOwnProperty(options.name))
             throw new Error("Alrready exist this name for a logStream");
