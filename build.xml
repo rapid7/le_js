@@ -56,7 +56,9 @@
   <target name="test" depends="fetch-deps">
     <concat destfile="lib/le_test.js">
       <filelist dir="deps" files="xhr.js,wru.js"/>
+      <filelist dir="deps" files="reload-context.js.start"/>
       <filelist dir="src" files="le.js"/>
+      <filelist dir="deps" files="reload-context.js.end"/>
       <filelist dir="test" files="suite.js"/>
     </concat>
 

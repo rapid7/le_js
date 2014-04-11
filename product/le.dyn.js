@@ -321,9 +321,14 @@ var LE = (function(window) {
         };
     }
 
-    var logger;
+    /**
+     * A single log object
+     * @constructor
+     * @param {Object} options
+     */
+    function Logger(options) {
+        var logger;
 
-    var _init = function(options) {
         // Default values
         var dict = {
             ssl: true,
@@ -336,10 +341,8 @@ var LE = (function(window) {
         if (typeof options === "object")
             for (var k in options)
                 dict[k] = options[k];
-        else if (typeof options === "string")
-            dict.token = options;
         else
-            throw new Error("Invalid parameters for init()");
+            throw new Error("Invalid parameters for createLogStream()");
 
         if (dict.token === undefined) {
             throw new Error("Token not present.");
@@ -347,30 +350,87 @@ var LE = (function(window) {
             logger = new LogStream(dict);
         }
 
+        var _log = function(msg) {
+            if (logger) {
+                return logger.log.apply(this, arguments);
+            } else
+                throw new Error("You must call LE.init(...) first.");
+        };
+
+         // The public interface
+        return {
+            log: function() {
+                _log.apply(this, arguments).level('LOG').send();
+            },
+            warn: function() {
+                _log.apply(this, arguments).level('WARN').send();
+            },
+            error: function() {
+                _log.apply(this, arguments).level('ERROR').send();
+            },
+            info: function() {
+                _log.apply(this, arguments).level('INFO').send();
+            }
+        };
+    }
+
+    // Array of Logger elements
+    var loggers = {};
+
+    var _getLogger = function(name) {
+        if (!loggers.hasOwnProperty(name))
+           throw new Error("Invalid name for logStream");
+
+        return loggers[name]
+    }
+
+    var  _createLogStream = function(options) {
+        if (typeof options.name !== "string")
+            throw new Error("Name not present.");
+        else if (loggers.hasOwnProperty(options.name))
+            throw new Error("Alrready exist this name for a logStream");
+
+        loggers[options.name] = new Logger(options);
+
         return true;
     };
 
-    var _log = function(msg) {
-        if (logger) {
-            return logger.log.apply(this, arguments);
-        } else
-            throw new Error("You must call LE.init(...) first.");
-    };
+    var _deprecatedInit = function(options) {
+        var dict = {
+            name : "default"
+        };
+
+        if (typeof options === "object")
+            for (var k in options)
+                dict[k] = options[k];
+        else if (typeof options === "string")
+            dict.token = options;
+        else
+            throw new Error("Invalid parameters for init()");
+
+        return _createLogStream(dict);
+    }
 
     // The public interface
     return {
-        init: _init,
+        init: _deprecatedInit,
+        createLogStream: _createLogStream,
+        to: _getLogger,
         log: function() {
-            _log.apply(this, arguments).level('LOG').send();
+            for (var k in loggers)
+                loggers[k].log.apply(this, arguments);
         },
         warn: function() {
-            _log.apply(this, arguments).level('WARN').send();
+            for (var k in loggers)
+                loggers[k].warn.apply(this, arguments);
         },
         error: function() {
-            _log.apply(this, arguments).level('ERROR').send();
+            for (var k in loggers)
+                loggers[k].error.apply(this, arguments);
         },
         info: function() {
-            _log.apply(this, arguments).level('INFO').send();
+            for (var k in loggers)
+                loggers[k].info.apply(this, arguments);
         }
     };
 }(this));

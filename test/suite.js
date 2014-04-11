@@ -1,4 +1,4 @@
-wru.test([
+var tests = [
   {
     name: 'single arg stream construction',
     test: function() {
@@ -386,4 +386,10 @@ wru.test([
       LE.log(x);
     }
   }
-]);
+];
+
+tests.map(function(test) {
+  test.setup = reloadContext
+});
+
+wru.test(tests);
