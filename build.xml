@@ -91,6 +91,7 @@
 
       <externs dir="deps">
         <file name="console-extern.js"/>
+        <file name="umd-extern.js"/>
       </externs>
       <sources dir="build">
         <file name="le.js"/>

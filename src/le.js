@@ -3,6 +3,8 @@
  * Please view license at https://raw.github.com/logentries/le_js/master/LICENSE
  */
 
+/*global define, module, exports */
+
 /** @param {Object} window */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
