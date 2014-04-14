@@ -268,7 +268,8 @@
             catchall: false,
             trace: true,
             page_info: 'never',
-            print: false
+            print: false,
+            token: null
         };
 
         if (typeof options === "object")
@@ -277,7 +278,7 @@
         else
             throw new Error("Invalid parameters for createLogStream()");
 
-        if (dict.token === undefined) {
+        if (dict.token === null) {
             throw new Error("Token not present.");
         } else {
             logger = new LogStream(dict);
