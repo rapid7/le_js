@@ -116,14 +116,9 @@
       <arg line="submodule foreach git pull origin master"/>
     </exec>
 
-    <concat destfile="product/le.common.js">
-      <filelist dir="product" files="le.js"/>
-      <filelist dir="deps" files="common.js"/>
-    </concat>
-
     <concat destfile="product/le.dyn.js">
       <filelist dir="dyn.xhr" files="dyn.xhr.js"/>
-      <filelist dir="product" files="le.common.js"/>
+      <filelist dir="product" files="le.js"/>
     </concat>
 
     <!-- Replace the product readme -->
