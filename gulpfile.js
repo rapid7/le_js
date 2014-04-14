@@ -26,7 +26,8 @@ gulp.task('build', function() {
             compilation_level: 'SIMPLE_OPTIMIZATIONS',
             warning_level: 'VERBOSE',
             debug: false,
-            language_in: 'ECMASCRIPT5_STRICT'
+            language_in: 'ECMASCRIPT5_STRICT',
+            externs: 'deps/umd-extern.js'
         }))
         .pipe(rename('le.min.js'))
 		.pipe(gulp.dest('product'));

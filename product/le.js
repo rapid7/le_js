@@ -3,8 +3,23 @@
  * Please view license at https://raw.github.com/logentries/le_js/master/LICENSE
  */
 
+/*global define, module, exports */
+
 /** @param {Object} window */
-var LE = (function(window) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([root], factory);
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory(root);
+    } else {
+        // Browser globals (root is window)
+        root.LE = factory(root);
+    }
+}(this, function(window) {
     "use strict";
 
     /**
@@ -253,7 +268,8 @@ var LE = (function(window) {
             catchall: false,
             trace: true,
             page_info: 'never',
-            print: false
+            print: false,
+            token: null
         };
 
         if (typeof options === "object")
@@ -262,7 +278,7 @@ var LE = (function(window) {
         else
             throw new Error("Invalid parameters for createLogStream()");
 
-        if (dict.token === undefined) {
+        if (dict.token === null) {
             throw new Error("Token not present.");
         } else {
             logger = new LogStream(dict);
@@ -351,4 +367,4 @@ var LE = (function(window) {
                 loggers[k].info.apply(this, arguments);
         }
     };
-}(this));
+}));
