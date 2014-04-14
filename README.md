@@ -12,6 +12,7 @@ Features
 * Cross-browser compatible
 * No external dependencies
 * Simple API
+* AMD and CommonJS support
 
 Quick start
 -----------
