@@ -22,6 +22,8 @@
 }(this, function(window) {
     "use strict";
 
+    var _lineSep = "\u2028";
+                    
     /**
      * A single log event stream.
      * @constructor
@@ -177,6 +179,8 @@
                               }
                           return value;
                         });
+
+                        serialized = serialized.replace('\\n', _lineSep);
 
                             if (_active) {
                                 _backlog.push(serialized);
