@@ -5,7 +5,11 @@ var closureCompiler = require('gulp-closure-compiler');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 
-var testFiles = 'test/*.js';
+var testFiles = [
+    'src/le.js',
+    'test/sinon*.js',
+    'test/*Spec.js'
+];
 var apiVersion = 1;
 var apiEndpoint = 'js.logentries.com/v' + apiVersion;
 
@@ -39,6 +43,8 @@ gulp.task('test', function() {
     return gulp.src(testFiles)
         .pipe(karma({
             configFile: 'karma.conf.js',
-            action: 'run'
+            action: 'start',
+            singleRun: true,
+            browsers: ['PhantomJS']
         }));
 });
