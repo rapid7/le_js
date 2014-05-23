@@ -141,6 +141,8 @@
             }
 
             return {level: function(l) {
+                // Don't log PAGE events to console
+                // PAGE events are generated for the agentInfo function
                     if (_print && typeof console !== "undefined" && l !== 'PAGE') {
                       try {
                         console[l.toLowerCase()].call(console, data);
