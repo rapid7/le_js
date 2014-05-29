@@ -141,6 +141,8 @@
             }
 
             return {level: function(l) {
+                // Don't log PAGE events to console
+                // PAGE events are generated for the agentInfo function
                     if (_print && typeof console !== "undefined" && l !== 'PAGE') {
                       try {
                         console[l.toLowerCase()].call(console, data);
@@ -316,7 +318,7 @@
            throw new Error("Invalid name for logStream");
 
         return loggers[name]
-    }
+    };
 
     var  _createLogStream = function(options) {
         if (typeof options.name !== "string")
@@ -343,13 +345,22 @@
             throw new Error("Invalid parameters for init()");
 
         return _createLogStream(dict);
-    }
+    };
+
+    var _destroyLogStream = function(name) {
+        if (typeof name === 'undefined'){
+            name = 'default';
+        }
+
+        delete loggers[name];
+    };
 
     // The public interface
     return {
         init: _deprecatedInit,
         createLogStream: _createLogStream,
         to: _getLogger,
+        destroy: _destroyLogStream,
         log: function() {
             for (var k in loggers)
                 loggers[k].log.apply(this, arguments);
