@@ -5,9 +5,6 @@ var closureCompiler = require('gulp-closure-compiler');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 
-var runner = require('karma').runner;
-var es = require('event-stream');
-
 var testFiles = [
     'src/le.js',
     'test/sinon*.js',
