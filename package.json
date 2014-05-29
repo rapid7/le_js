@@ -2,7 +2,7 @@
   "name": "le_js",
   "version": "0.0.1",
   "description": "Javascript library for Logentries.com",
-  "main": "src/le.js",
+  "main": "product/le.js",
   "directories": {
     "test": "test"
   },
@@ -21,14 +21,17 @@
   },
   "homepage": "https://logentries.com",
   "devDependencies": {
-    "gulp": "^3.6.0",
+    "gulp": "^3.6.2",
     "gulp-closure-compiler": "^0.1.2",
     "gulp-concat": "^2.2.0",
     "gulp-karma": "^0.0.4",
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.2.0",
-    "karma": "^0.12.3",
+    "karma": "^0.12.16",
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4"
+  },
+  "engines": {
+    "node": "~0.10"
   }
 }

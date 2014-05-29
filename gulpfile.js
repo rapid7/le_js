@@ -5,6 +5,9 @@ var closureCompiler = require('gulp-closure-compiler');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 
+var runner = require('karma').runner;
+var es = require('event-stream');
+
 var testFiles = [
     'src/le.js',
     'test/sinon*.js',
@@ -14,11 +17,11 @@ var apiVersion = 1;
 var apiEndpoint = 'js.logentries.com/v' + apiVersion;
 
 
-gulp.task('default', ['build', 'watch']);
+gulp.task('default', ['test', 'build']);
 
 
 gulp.task('watch', function() {
-    gulp.watch('src/le.js', ['build']);
+    gulp.watch('src/le.js', ['test']);
 });
 
 
