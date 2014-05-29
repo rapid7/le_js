@@ -1,7 +1,0 @@
-    return {LE: LE};
-};
-
-var reloadContext = function () {
-    var context = getContext();
-    LE = context.LE;
-};
