@@ -324,7 +324,7 @@
         if (typeof options.name !== "string")
             throw new Error("Name not present.");
         else if (loggers.hasOwnProperty(options.name))
-            throw new Error("Alrready exist this name for a logStream");
+            throw new Error("Already exist this name for a logStream");
 
         loggers[options.name] = new Logger(options);
 
