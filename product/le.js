@@ -332,7 +332,11 @@
         if (typeof options.name !== "string")
             throw new Error("Name not present.");
         else if (loggers.hasOwnProperty(options.name))
+<<<<<<< HEAD
             throw new Error("A logger with that name already exists!");
+=======
+            throw new Error("Already exist this name for a logStream");
+>>>>>>> new product with fixed typo
 
         loggers[options.name] = new Logger(options);
 
