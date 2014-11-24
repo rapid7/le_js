@@ -300,3 +300,19 @@ describe('destroys log streams', function () {
     afterEach(destroy);
 });
 
+describe('custom endpoint', function () {
+    beforeEach(mockXMLHttpRequests);
+    beforeEach(addGetJson);
+    beforeEach(function() {
+        LE.init({token: TOKEN, endpoint: '/log'});
+    });
+    
+    it('can be set', function () {
+        LE.log('some message');
+        var lastReq = this.requestList[0];
+        expect(lastReq.url).toBe('/log');
+    });
+    
+    afterEach(destroy);
+});
+
