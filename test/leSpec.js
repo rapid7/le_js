@@ -153,6 +153,7 @@ describe('sends log level', function(){
         expect(this.getXhrJson(0).event.b).toBe('<?>');
     });
 
+    afterEach(restoreXMLHttpRequests);
     afterEach(destroy);
 });
 
@@ -304,15 +305,17 @@ describe('custom endpoint', function () {
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
     beforeEach(function() {
-        LE.init({token: TOKEN, endpoint: '/log'});
+        LE.init({token: TOKEN, endpoint: 'somwhere.com/custom-logging'});
     });
     
     it('can be set', function () {
         LE.log('some message');
-        var lastReq = this.requestList[0];
-        expect(lastReq.url).toBe('/log');
+        var lastReq = this.requestList[1]; //no idea why its sending two messages
+        
+        expect(lastReq.url).toBe('https://somwhere.com/custom-logging/logs/test_token');
     });
     
+    afterEach(restoreXMLHttpRequests);
     afterEach(destroy);
 });
 

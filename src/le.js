@@ -49,9 +49,8 @@
         /** @type {boolean} */
         var _print = options.print;
         /**
-         * @const
          * @type {string} */
-        var _endpoint = "localhost:8080/v1";
+        var _endpoint = options.endpoint || "localhost:8080/v1";
 
         /**
          * Flag to prevent further invocations on network err
@@ -72,7 +71,7 @@
         var _active = false;
         /** @type {boolean} */
         var _sentPageInfo = false;
-
+        
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
@@ -279,9 +278,10 @@
             trace: true,
             page_info: 'never',
             print: false,
+            endpoint: null,
             token: null
         };
-
+        
         if (typeof options === "object")
             for (var k in options)
                 dict[k] = options[k];
