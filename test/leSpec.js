@@ -1,3 +1,4 @@
+/*globals LE, sinon, describe, it, expect, afterEach, beforeEach, jasmine*/
 var GLOBAL = this;
 var TOKEN = 'test_token';
 
@@ -14,7 +15,7 @@ function mockXMLHttpRequests(){
 
     this.xhr.onCreate = function(request){
         requestList.push(request);
-    }
+    };
 }
 function addGetJson(){
     this.getXhrJson = function(xhrRequestId) {
@@ -139,7 +140,7 @@ describe('sends log level', function(){
             return function(){
                 LE[method]('test');
                 expect(this.getXhrJson(0).level).toBe(level);
-            }
+            };
         }(method, level));
     }
 
