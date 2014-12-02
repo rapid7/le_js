@@ -49,9 +49,13 @@
         /** @type {boolean} */
         var _print = options.print;
         /**
-         * @const
          * @type {string} */
-        var _endpoint = "js.logentries.com/v1";
+        var _endpoint;
+        if (window.LEENDPOINT) {
+            _endpoint = window.LEENDPOINT;
+        } else {
+            _endpoint = "js.logentries.com/v1";
+        }
 
         /**
          * Flag to prevent further invocations on network err
@@ -72,7 +76,7 @@
         var _active = false;
         /** @type {boolean} */
         var _sentPageInfo = false;
-
+        
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
@@ -279,9 +283,10 @@
             trace: true,
             page_info: 'never',
             print: false,
+            endpoint: null,
             token: null
         };
-
+        
         if (typeof options === "object")
             for (var k in options)
                 dict[k] = options[k];
@@ -333,7 +338,6 @@
             throw new Error("Name not present.");
         else if (loggers.hasOwnProperty(options.name))
             throw new Error("A logger with that name already exists!");
-
         loggers[options.name] = new Logger(options);
 
         return true;

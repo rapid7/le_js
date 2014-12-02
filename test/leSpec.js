@@ -1,3 +1,4 @@
+/*globals LE, sinon, describe, it, expect, afterEach, beforeEach, jasmine*/
 var GLOBAL = this;
 var TOKEN = 'test_token';
 
@@ -14,7 +15,7 @@ function mockXMLHttpRequests(){
 
     this.xhr.onCreate = function(request){
         requestList.push(request);
-    }
+    };
 }
 function addGetJson(){
     this.getXhrJson = function(xhrRequestId) {
@@ -139,7 +140,7 @@ describe('sends log level', function(){
             return function(){
                 LE[method]('test');
                 expect(this.getXhrJson(0).level).toBe(level);
-            }
+            };
         }(method, level));
     }
 
@@ -152,6 +153,7 @@ describe('sends log level', function(){
         expect(this.getXhrJson(0).event.b).toBe('<?>');
     });
 
+    afterEach(restoreXMLHttpRequests);
     afterEach(destroy);
 });
 
@@ -296,6 +298,25 @@ describe('destroys log streams', function () {
         }).not.toThrow();
     });
 
+    afterEach(destroy);
+});
+
+describe('custom endpoint', function () {
+    beforeEach(mockXMLHttpRequests);
+    beforeEach(addGetJson);
+    beforeEach(function() {
+        window.LEENDPOINT = 'somwhere.com/custom-logging';
+        LE.init({token: TOKEN});
+    });
+    
+    it('can be set', function () {
+        LE.log('some message');
+        var lastReq = this.requestList[1]; //no idea why its sending two messages
+        
+        expect(lastReq.url).toBe('https://somwhere.com/custom-logging/logs/test_token');
+    });
+    
+    afterEach(restoreXMLHttpRequests);
     afterEach(destroy);
 });
 
