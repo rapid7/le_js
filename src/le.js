@@ -50,7 +50,12 @@
         var _print = options.print;
         /**
          * @type {string} */
-        var _endpoint = options.endpoint || "localhost:8080/v1";
+        var _endpoint;
+        if (window.LEENDPOINT) {
+            _endpoint = window.LEENDPOINT;
+        } else {
+            _endpoint = "localhost:8080/v1";
+        }
 
         /**
          * Flag to prevent further invocations on network err

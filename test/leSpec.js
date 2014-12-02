@@ -305,7 +305,8 @@ describe('custom endpoint', function () {
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
     beforeEach(function() {
-        LE.init({token: TOKEN, endpoint: 'somwhere.com/custom-logging'});
+        window.LEENDPOINT = 'somwhere.com/custom-logging';
+        LE.init({token: TOKEN});
     });
     
     it('can be set', function () {

@@ -50,7 +50,12 @@
         var _print = options.print;
         /**
          * @type {string} */
-        var _endpoint = options.endpoint || "js.logentries.com/v1";
+        var _endpoint;
+        if (window.LEENDPOINT) {
+            _endpoint = window.LEENDPOINT;
+        } else {
+            _endpoint = "js.logentries.com/v1";
+        }
 
         /**
          * Flag to prevent further invocations on network err
@@ -332,12 +337,7 @@
         if (typeof options.name !== "string")
             throw new Error("Name not present.");
         else if (loggers.hasOwnProperty(options.name))
-<<<<<<< HEAD
             throw new Error("A logger with that name already exists!");
-=======
-            throw new Error("Already exist this name for a logStream");
->>>>>>> new product with fixed typo
-
         loggers[options.name] = new Logger(options);
 
         return true;
