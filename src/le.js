@@ -4,7 +4,7 @@
  */
 
 /*jslint browser:true*/
-/*global define, module, exports */
+/*global define, module, exports, console, global */
 
 /** @param {Object} window */
 (function (root, factory) {
@@ -114,7 +114,7 @@
                 do_not_track: nav.doNotTrack
               },
               platform: nav.platform
-            }
+            };
         };
 
         var _getEvent = function() {
@@ -178,7 +178,7 @@
                               }
                             }
                             return -1;
-                          }
+                          };
                               if (typeof value === "undefined") {
                                 return "undefined";
                               } else if (typeof value === "object" && value !== null) {
@@ -246,7 +246,7 @@
                         }
                     }
 
-                    }
+                    };
                 } else {
                   request.onload = function() {
                     if (_backlog.length > 0) {
@@ -255,7 +255,7 @@
                     } else {
                       _active = false;
                     }
-                  }
+                  };
                 }
 
                 var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
@@ -331,7 +331,7 @@
         if (!loggers.hasOwnProperty(name))
            throw new Error("Invalid name for logStream");
 
-        return loggers[name]
+        return loggers[name];
     };
 
     var  _createLogStream = function(options) {
