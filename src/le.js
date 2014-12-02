@@ -3,6 +3,7 @@
  * Please view license at https://raw.github.com/logentries/le_js/master/LICENSE
  */
 
+/*jslint browser:true*/
 /*global define, module, exports */
 
 /** @param {Object} window */

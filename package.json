@@ -34,5 +34,10 @@
   },
   "engines": {
     "node": "~0.10"
+  },
+  "jshintConfig": {
+    "undef": true,
+    "unused": true,
+    "es3": true
   }
 }
