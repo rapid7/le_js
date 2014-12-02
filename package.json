@@ -30,14 +30,15 @@
     "jshint": "^2.5.10",
     "karma": "^0.12.16",
     "karma-jasmine": "^0.1.5",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sinon": "^1.0.4",
+    "sinon": "^1.12.1"
   },
   "engines": {
     "node": "~0.10"
   },
   "jshintConfig": {
     "undef": true,
-    "unused": true,
     "es3": true
   }
 }
