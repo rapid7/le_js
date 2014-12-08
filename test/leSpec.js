@@ -1,4 +1,5 @@
-/*globals LE, sinon, describe, it, expect, afterEach, beforeEach, jasmine*/
+/*jslint loopfunc:true*/
+/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window*/
 var GLOBAL = this;
 var TOKEN = 'test_token';
 

@@ -1,5 +1,6 @@
 // Karma configuration
 // Generated on Fri Apr 04 2014 16:41:37 GMT+0100 (IST)
+/*jslint node:true*/
 
 module.exports = function(config) {
   config.set({
@@ -10,18 +11,13 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'sinon'],
 
 
     // list of files / patterns to load in the browser
     files: [
       // Source files
       'src/*.js',
-
-      // Test files
-      'test/sinon-1.9.1.js',
-      'test/sinon-ie-1.9.1.js', // for fake XHR in IE
-
       // Specs
       'test/*Spec.js'
     ],
