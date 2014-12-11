@@ -391,4 +391,4 @@
                 loggers[k].info.apply(this, arguments);
         }
     };
-}));
+}(this)));
