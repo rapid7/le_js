@@ -9,4 +9,4 @@ deploy:
   skip_cleanup: true
   on:
     repo: logentries/le_js
-    branch: release
+    tags: true
