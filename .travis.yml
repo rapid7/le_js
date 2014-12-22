@@ -6,7 +6,7 @@ deploy:
   api_key:
     secure: S2JVfYhWj4b2DvjsPtJYqUrAUtC9Mwdc1kMkA+p/LeSYJOZL8gFq55YReAPI1pNKSTJxwnxdlbMb5gtxyItVj7vz23Inv5S1DwialwgTff3ZV1JOquT91BeHnvphjBdm5L8G65QI35xEu5d1AuFr+cv6q+ocGr/k70b56fnEPcs=
   file: "product/le.min.js"
-	skip_cleanup: true
+  skip_cleanup: true
   on:
     repo: logentries/le_js
-		branch: release
+    branch: release
