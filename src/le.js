@@ -40,7 +40,7 @@
         /**
          * @const
          * @type {string} */
-        var _traceCode = (Math.random() + Math.PI).toString(36).substring(2, 10);
+        var _traceCode = options.tracecode;
         /** @type {boolean} */
         var _doTrace = options.trace;
         /** @type {string} */
@@ -77,7 +77,7 @@
         var _active = false;
         /** @type {boolean} */
         var _sentPageInfo = false;
-        
+
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
@@ -279,6 +279,7 @@
 
         // Default values
         var dict = {
+            tracecode: null,
             ssl: true,
             catchall: false,
             trace: true,
@@ -287,12 +288,28 @@
             endpoint: null,
             token: null
         };
-        
+
         if (typeof options === "object")
             for (var k in options)
                 dict[k] = options[k];
         else
             throw new Error("Invalid parameters for createLogStream()");
+
+
+        switch (typeof dict.trace) {
+            case 'function':
+                dict.tracecode = dict.trace.call();
+                dict.trace = true;
+                break;
+            case 'string':
+                dict.tracecode = dict.trace;
+                dict.trace = true;
+                break;
+            default:
+                dict.tracecode = (Math.random() + Math.PI).toString(36).substring(2, 10);
+                dict.trace = !!dict.trace;
+                break;
+        }
 
         if (dict.token === null) {
             throw new Error("Token not present.");

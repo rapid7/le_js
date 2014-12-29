@@ -119,6 +119,47 @@ describe('sending messages', function () {
     afterEach(destroy);
 });
 
+describe('trace code', function () {
+    beforeEach(mockXMLHttpRequests);
+    beforeEach(addGetJson);
+    afterEach(destroy);
+
+    it('should be internally generated', function(){
+        LE.init({token: TOKEN, trace: true});
+        LE.log('test');
+
+        var trace = this.getXhrJson(0).trace;
+        expect(trace).toEqual(jasmine.any(String));
+        expect(trace.length).toBe(8);
+    });
+
+    it('should not be included', function(){
+        LE.init({token: TOKEN, trace: false});
+        LE.log('test');
+
+        var trace = this.getXhrJson(0).trace;
+        expect(trace).toBeUndefined();
+    });
+
+    it('should be from custom string', function(){
+        LE.init({token: TOKEN, trace: 'custom-code'});
+        LE.log('test');
+
+        var trace = this.getXhrJson(0).trace;
+        expect(trace).toMatch(/custom\-code/);
+    });
+
+    it('should be from custom function', function(){
+        LE.init({token: TOKEN, trace: function () {
+            return 'generateCustomCode';
+        }});
+        LE.log('test');
+
+        var trace = this.getXhrJson(0).trace;
+        expect(trace).toMatch(/generateCustomCode/);
+    });
+});
+
 describe('sends log level', function(){
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
@@ -309,14 +350,14 @@ describe('custom endpoint', function () {
         window.LEENDPOINT = 'somwhere.com/custom-logging';
         LE.init({token: TOKEN});
     });
-    
+
     it('can be set', function () {
         LE.log('some message');
         var lastReq = this.requestList[1]; //no idea why its sending two messages
-        
+
         expect(lastReq.url).toBe('https://somwhere.com/custom-logging/logs/test_token');
     });
-    
+
     afterEach(restoreXMLHttpRequests);
     afterEach(destroy);
 });
