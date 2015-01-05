@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-- 0.1
+  - 0.10
+sudo: false
 deploy:
   provider: releases
   api_key:
@@ -10,7 +11,6 @@ deploy:
   on:
     repo: logentries/le_js
     tags: true
-  - 0.10
 env:
-  - secure: "RHRZZTijhsDbuoJaNDPnLs3ipE4LjackSNe5wBiycD4YL5cAuE+smX1Wdee3VYf25q5SaBI42/V+nb4vtBiJLU5vTnriij0vsckvlIyj5vY4Rf/uLSJ2VfIw4/Uo1K45mqnZLgTqKrKVVTHU0Irl20d34pQeb51jGDx6DCwuYmY="
-  - secure: "HPKeHnTPNAItQjjNlgIhrKwnLaVpz5kcSXISu72s1lu8+VoZL4cYhjqB5zMPqAMMroCYsXF75570wOCzFcJAckS0BpSNKaYtazXvyZDQymGmAqI7RxsNEx++b/fW3RRBbw7uA8LT0hoA0k1BV99TYW0xXJ7/v3PmcugeC0jCGuo="
+  global:
+  - secure: iuucx9DZTvVM2RXyGQ1eR+qPpTx9bZuj4NpCvY1CC1e9oUyhWgEAC9kfy04a96fqFvJQ0tCNPzhzSQRJtEAQp0vmoA+1ss/nrh98LhjhkXHZ+4gbaqoQAL8jTai95XmedR6UKckZA1SH3K9yeergeW9+Sq6kKvbQHsYBYSmmq0g=

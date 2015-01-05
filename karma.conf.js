@@ -25,14 +25,14 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-      
+
     ],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-    
+
     },
 
 
@@ -79,10 +79,10 @@ module.exports = function(config) {
         base: 'SauceLabs',
         browserName: 'firefox'
     },
-    sl_ie_7: {
+    sl_ie_9: {
         base: 'SauceLabs',
         browserName: 'internet explorer',
-        version: '7'
+        version: '9'
     }
   };
 
@@ -95,7 +95,7 @@ module.exports = function(config) {
         },
         recordScreenshots: false,
         customLaunchers: customLaunchers,
-        browsers: ['sl_firefox', 'sl_ie_7', 'PhantomJS'],
+        browsers: ['sl_firefox', 'sl_ie_9', 'PhantomJS'],
         reporters: ['saucelabs'],
         colors: false,
         singleRun: true
