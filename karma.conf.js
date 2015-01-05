@@ -83,6 +83,11 @@ module.exports = function(config) {
         base: 'SauceLabs',
         browserName: 'internet explorer',
         version: '9'
+    },
+    sl_ie_11: {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        version: '11'
     }
   };
 
@@ -95,7 +100,7 @@ module.exports = function(config) {
         },
         recordScreenshots: false,
         customLaunchers: customLaunchers,
-        browsers: ['sl_firefox', 'sl_ie_9', 'PhantomJS'],
+        browsers: ['sl_firefox', 'sl_ie_9', 'sl_ie_11', 'sl_safari', 'PhantomJS'],
         reporters: ['saucelabs'],
         colors: false,
         singleRun: true
