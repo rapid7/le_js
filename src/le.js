@@ -28,8 +28,26 @@
         // Browser globals (root is window)
         root.LE = factory(root);
     }
-}(this, function(window) {
+}(this, function (window) {
     "use strict";
+    // cross-browser indexOf fix
+    var _indexOf = function (array, obj) {
+        for (var i = 0; i < array.length; i++) {
+            if (obj === array[i]) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    // Obtain a browser-specific XHR object
+    var _getAjaxObject = function () {
+        if (typeof XDomainRequest !== "undefined") {
+            // We're using IE8/9
+            return new XDomainRequest();
+        }
+        return new XMLHttpRequest();
+    };
 
     /**
      * A single log event stream.
@@ -77,7 +95,7 @@
         var _active = false;
         /** @type {boolean} */
         var _sentPageInfo = false;
-        
+
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
@@ -170,15 +188,6 @@
                         var cache = [];
                         var serialized = JSON.stringify(data, function(key, value) {
 
-                          // cross-browser indexOf fix
-                          var _indexOf = function(array, obj) {
-                            for (var i = 0; i < array.length; i++) {
-                              if (obj === array[i]) {
-                                return i;
-                              }
-                            }
-                            return -1;
-                          };
                               if (typeof value === "undefined") {
                                 return "undefined";
                               } else if (typeof value === "object" && value !== null) {
@@ -207,15 +216,6 @@
 
         var _apiCall = function(token, data) {
             _active = true;
-
-            // Obtain a browser-specific XHR object
-            var _getAjaxObject = function() {
-              if (typeof XDomainRequest !== "undefined") {
-                // We're using IE8/9
-                return new XDomainRequest();
-              }
-              return new XMLHttpRequest();
-            };
 
             var request = _getAjaxObject();
 
@@ -287,7 +287,7 @@
             endpoint: null,
             token: null
         };
-        
+
         if (typeof options === "object")
             for (var k in options)
                 dict[k] = options[k];
