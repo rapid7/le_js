@@ -65,19 +65,6 @@
         var _token = options.token;
         /** @type {boolean} */
         var _print = options.print;
-        /**
-         * @type {string} */
-        var _endpoint;
-        if (window.LEENDPOINT) {
-            _endpoint = window.LEENDPOINT;
-        } else {
-            _endpoint = "localhost:8080/v1";
-        }
-
-        /**
-         * Flag to prevent further invocations on network err
-         ** @type {boolean} */
-        var _shouldCall = true;
         /** @type {boolean} */
         var _SSL = function() {
             if (typeof XDomainRequest === "undefined") {
@@ -87,6 +74,19 @@
             // must adhere to the page's encryption scheme.
             return window.location.protocol === "https:" ? true : false;
         }();
+        /** @type {string} */
+        var _endpoint;
+        if (window.LEENDPOINT) {
+            _endpoint = window.LEENDPOINT;
+        } else {
+            _endpoint = "localhost:8080/v1";
+        }
+        _endpoint = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
+
+        /**
+         * Flag to prevent further invocations on network err
+         ** @type {boolean} */
+        var _shouldCall = true;
         /** @type {Array.<string>} */
         var _backlog = [];
         /** @type {boolean} */
@@ -255,8 +255,7 @@
                   };
                 }
 
-                var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
-                request.open("POST", uri, true);
+                request.open("POST", _endpoint, true);
                 if (request.constructor === XMLHttpRequest) {
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'text/json');
