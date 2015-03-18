@@ -58,9 +58,7 @@
         /**
          * @const
          * @type {string} */
-        var _traceCode = (Math.random() + Math.PI).toString(36).substring(2, 10);
-        /** @type {boolean} */
-        var _doTrace = options.trace;
+        var _traceCode = options.trace ? (Math.random() + Math.PI).toString(36).substring(2, 10) : null;
         /** @type {string} */
         var _pageInfo = options.page_info;
         /** @type {string} */
@@ -166,8 +164,7 @@
                 }
             }
 
-            // Add trace code if required
-            if (_doTrace) {
+            if (_traceCode) {
                 data.trace = _traceCode;
             }
 
