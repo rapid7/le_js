@@ -77,7 +77,7 @@
         var _active = false;
         /** @type {boolean} */
         var _sentPageInfo = false;
-        
+
         if (options.catchall) {
             var oldHandler = window.onerror;
             var newHandler = function(msg, url, line) {
@@ -157,11 +157,16 @@
                 // Don't log PAGE events to console
                 // PAGE events are generated for the agentInfo function
                     if (_print && typeof console !== "undefined" && l !== 'PAGE') {
+                      var serialized = null;
+                      if (typeof XDomainRequest !== "undefined") {
+                        // We're using IE8/9
+                        serialized = data.trace + ' ' + data.event;
+                      }
                       try {
-                        console[l.toLowerCase()].call(console, data);
+                        console[l.toLowerCase()].call(console, (serialized || data));
                       } catch (ex) {
                         // IE compat fix
-                        console.log(data);
+                        console.log((serialized || data));
                       }
                     }
                     data.level = l;
@@ -287,7 +292,7 @@
             endpoint: null,
             token: null
         };
-        
+
         if (typeof options === "object")
             for (var k in options)
                 dict[k] = options[k];

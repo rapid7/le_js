@@ -1,30 +1,33 @@
-/*jslint loopfunc:true*/
-/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window*/
+/*jshint loopfunc:true*/
+/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window, console, spyOn, XDomainRequest, XMLHttpRequest*/
 var GLOBAL = this;
 var TOKEN = 'test_token';
 
-function destroy(){
+function destroy() {
     LE.destroy('default');
     LE.destroy(TOKEN);
 }
-function mockXMLHttpRequests(){
+
+function mockXMLHttpRequests() {
     // Prevent requests
     this.xhr = sinon.useFakeXMLHttpRequest();
 
     // List requests
     var requestList = this.requestList = [];
 
-    this.xhr.onCreate = function(request){
+    this.xhr.onCreate = function (request) {
         requestList.push(request);
     };
 }
-function addGetJson(){
-    this.getXhrJson = function(xhrRequestId) {
+
+function addGetJson() {
+    this.getXhrJson = function (xhrRequestId) {
         return JSON.parse(this.requestList[xhrRequestId].requestBody);
     };
 }
-function restoreXMLHttpRequests(){
-    if(this.xhr){
+
+function restoreXMLHttpRequests() {
+    if (this.xhr) {
         this.xhr.restore();
     }
 }
@@ -35,7 +38,9 @@ describe('construction', function () {
     });
 
     it('with object', function () {
-        expect(LE.init({token: TOKEN})).toBe(true);
+        expect(LE.init({
+            token: TOKEN
+        })).toBe(true);
     });
 
     // TODO: Test Raul's multi logger
@@ -46,7 +51,7 @@ describe('construction', function () {
         });
 
         it('without token (object)', function () {
-            expect(function() {
+            expect(function () {
                 LE.init({});
             }).toThrow("Token not present.");
         });
@@ -58,23 +63,26 @@ describe('construction', function () {
 describe('sending messages', function () {
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
-    beforeEach(function() {
-        LE.init({token: TOKEN, trace: true});
+    beforeEach(function () {
+        LE.init({
+            token: TOKEN,
+            trace: true
+        });
     });
 
-    it('logs null values', function(){
+    it('logs null values', function () {
         LE.log(null);
 
         expect(this.getXhrJson(0).event).toBe(null);
     });
 
-    it('logs undefined values', function(){
+    it('logs undefined values', function () {
         LE.log(undefined);
 
         expect(this.getXhrJson(0).event).toBe('undefined');
     });
 
-    it('logs object with nullish properties', function(){
+    it('logs object with nullish properties', function () {
         LE.log({
             undef: undefined,
             nullVal: null
@@ -85,7 +93,7 @@ describe('sending messages', function () {
         expect(event.nullVal).toBe(null);
     });
 
-    it('logs array with nullish values', function(){
+    it('logs array with nullish values', function () {
         LE.log([
             undefined,
             null
@@ -96,7 +104,7 @@ describe('sending messages', function () {
         expect(event[1]).toBe(null);
     });
 
-    it('sends trace code', function(){
+    it('sends trace code', function () {
         LE.log('test');
 
         var trace = this.getXhrJson(0).trace;
@@ -104,7 +112,7 @@ describe('sending messages', function () {
         expect(trace.length).toBe(8);
     });
 
-    it('accepts multiple arguments', function(){
+    it('accepts multiple arguments', function () {
         var args = ['test', 1, undefined];
 
         LE.log.apply(LE, args);
@@ -119,11 +127,13 @@ describe('sending messages', function () {
     afterEach(destroy);
 });
 
-describe('sends log level', function(){
+describe('sends log level', function () {
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
-    beforeEach(function() {
-        LE.init({token: TOKEN});
+    beforeEach(function () {
+        LE.init({
+            token: TOKEN
+        });
     });
 
     var methods = [
@@ -133,19 +143,19 @@ describe('sends log level', function(){
         'error'
     ];
 
-    for(var i=0; i<methods.length; i++){
+    for (var i = 0; i < methods.length; i++) {
         var method = methods[i];
         var level = method.toUpperCase();
 
-        it(level, function(method, level){
-            return function(){
+        it(level, function (method, level) {
+            return function () {
                 LE[method]('test');
                 expect(this.getXhrJson(0).level).toBe(level);
             };
         }(method, level));
     }
 
-    it('excludes cyclic values', function(){
+    it('excludes cyclic values', function () {
         var a = {};
         a.b = a;
 
@@ -158,25 +168,28 @@ describe('sends log level', function(){
     afterEach(destroy);
 });
 
-describe('sending user agent data', function(){
+describe('sending user agent data', function () {
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
 
-    function checkAgentInfo(agent){
+    function checkAgentInfo(agent) {
         expect(agent).toBeDefined();
 
         // Perhaps these could be filled in since we're running in a
         // real browser now?
-        expect(agent.url)     .toBeDefined();
+        expect(agent.url).toBeDefined();
         expect(agent.referrer).toBeDefined();
-        expect(agent.screen)  .toBeDefined();
-        expect(agent.window)  .toBeDefined();
-        expect(agent.browser) .toBeDefined();
+        expect(agent.screen).toBeDefined();
+        expect(agent.window).toBeDefined();
+        expect(agent.browser).toBeDefined();
         expect(agent.platform).toBeDefined();
     }
 
-    it('page_info: never - never sends log data', function(){
-        LE.init({token: TOKEN, page_info: 'never'});
+    it('page_info: never - never sends log data', function () {
+        LE.init({
+            token: TOKEN,
+            page_info: 'never'
+        });
 
         LE.log('hi');
 
@@ -186,8 +199,11 @@ describe('sending user agent data', function(){
         expect(this.getXhrJson(0).agent).toBeUndefined();
     });
 
-    it('page_info: per-entry - sends log data for each log', function(){
-        LE.init({token: TOKEN, page_info: 'per-entry'});
+    it('page_info: per-entry - sends log data for each log', function () {
+        LE.init({
+            token: TOKEN,
+            page_info: 'per-entry'
+        });
 
         LE.log('hi');
 
@@ -210,8 +226,11 @@ describe('sending user agent data', function(){
         expect(this.getXhrJson(3).event).toBe('hi again');
     });
 
-    it('page_info: per-page - always sends data for each log', function(){
-        LE.init({token: TOKEN, page_info: 'per-page'});
+    it('page_info: per-page - always sends data for each log', function () {
+        LE.init({
+            token: TOKEN,
+            page_info: 'per-page'
+        });
 
         LE.log('hi');
 
@@ -235,21 +254,27 @@ describe('sending user agent data', function(){
 
 describe('catch all option', function () {
     beforeEach(mockXMLHttpRequests);
-    beforeEach(function(){
+    beforeEach(function () {
         this.oldErrorHandler = sinon.stub(GLOBAL, 'onerror')
             .returns(true);
     });
 
-    it('assigns onerror handler', function (){
-        LE.init({token: TOKEN, catchall: true});
+    it('assigns onerror handler', function () {
+        LE.init({
+            token: TOKEN,
+            catchall: true
+        });
         // Don't test if onerror is set because #1 we've got a stub
         // and 2nd, karma has its handler.
         expect(GLOBAL.onerror).not.toBe(this.oldErrorHandler);
     });
 
-    it('sends errors', function (){
+    it('sends errors', function () {
         // Don't care what happens to this, just ignore the error
-        LE.init({token: TOKEN, catchall: true});
+        LE.init({
+            token: TOKEN,
+            catchall: true
+        });
 
         // Check if onerror handler is not the stub from above
         expect(GLOBAL.onerror).not.toBe(this.oldErrorHandler);
@@ -262,8 +287,11 @@ describe('catch all option', function () {
         expect(this.requestList.length).toBe(1);
     });
 
-    it('bubbles onerror calls', function (){
-        LE.init({token: TOKEN, catchall: true});
+    it('bubbles onerror calls', function () {
+        LE.init({
+            token: TOKEN,
+            catchall: true
+        });
 
         // Pretend to trigger an error like the browser might
         GLOBAL.onerror('Script error', 'http://example.com', 0);
@@ -271,8 +299,8 @@ describe('catch all option', function () {
         expect(this.oldErrorHandler.calledOnce).toBe(true);
     });
 
-    afterEach(function(){
-        if(this.oldErrorHandler.restore){
+    afterEach(function () {
+        if (this.oldErrorHandler.restore) {
             this.oldErrorHandler.restore();
         }
     });
@@ -285,17 +313,23 @@ describe('destroys log streams', function () {
         LE.init(TOKEN);
         LE.destroy();
 
-        expect(function(){
+        expect(function () {
             LE.init(TOKEN);
         }).not.toThrow();
     });
 
     it('custom name', function () {
-        LE.init({token: TOKEN, name: 'test'});
+        LE.init({
+            token: TOKEN,
+            name: 'test'
+        });
         LE.destroy('test');
 
-        expect(function(){
-            LE.init({token: TOKEN, name: 'test'});
+        expect(function () {
+            LE.init({
+                token: TOKEN,
+                name: 'test'
+            });
         }).not.toThrow();
     });
 
@@ -305,19 +339,53 @@ describe('destroys log streams', function () {
 describe('custom endpoint', function () {
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
-    beforeEach(function() {
+    beforeEach(function () {
         window.LEENDPOINT = 'somwhere.com/custom-logging';
-        LE.init({token: TOKEN});
+        LE.init({
+            token: TOKEN
+        });
     });
-    
+
     it('can be set', function () {
         LE.log('some message');
         var lastReq = this.requestList[1]; //no idea why its sending two messages
-        
+
         expect(lastReq.url).toBe('https://somwhere.com/custom-logging/logs/test_token');
     });
-    
+
     afterEach(restoreXMLHttpRequests);
     afterEach(destroy);
 });
 
+describe('print option', function () {
+    beforeEach(mockXMLHttpRequests);
+    beforeEach(function () {
+        spyOn(console, 'log');
+        spyOn(console, 'info');
+        spyOn(console, 'warn');
+        spyOn(console, 'error');
+        window.LEENDPOINT = 'somwhere.com/custom-logging';
+        LE.init({
+            token: TOKEN,
+            print: true
+        });
+    });
+
+    it('should log to console also', function () {
+        LE.log('some message');
+        expect(console.log.mostRecentCall.args[0].trace).toMatch(/[0-9a-z]{8}/);
+        expect(console.log.mostRecentCall.args[0].event).toEqual('some message');
+        expect(console.log.mostRecentCall.args[0].level).toEqual('LOG');
+    });
+
+    it('below IE9 should stringify console messages', function () {
+        /*jshint -W020 */
+        XDomainRequest = XMLHttpRequest; //trick into thinking we are in IE8/9 browser
+        /*jshint +W020 */
+        LE.log('some message');
+        expect(console.log.mostRecentCall.args[0]).toMatch(/[0-9a-z]{8} some message/);
+    });
+
+    afterEach(restoreXMLHttpRequests);
+    afterEach(destroy);
+});
