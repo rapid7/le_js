@@ -3,8 +3,6 @@
 var GLOBAL = this;
 var TOKEN = 'test_token';
 
-var sinon = require('sinon');
-
 function destroy() {
     LE.destroy('default');
     LE.destroy(TOKEN);
