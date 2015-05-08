@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "gulp test; jshint src/ test/leSpec.js",
+    "test": "karma start; jshint src/ test/leSpec.js",
     "build": "gulp build"
   },
   "repository": {
@@ -29,8 +29,10 @@
     "gulp-replace": "^0.2.0",
     "jshint": "^2.5.10",
     "karma": "^0.12.16",
+    "karma-cli": "0.0.4",
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sauce-launcher": "^0.2.10",
     "karma-sinon": "^1.0.4",
     "sinon": "^1.12.1"
   },

@@ -37,14 +37,3 @@ gulp.task('build', function() {
         .pipe(rename('le.min.js'))
         .pipe(gulp.dest('product'));
 });
-
-
-gulp.task('test', function() {
-    return gulp.src(testFiles)
-        .pipe(karma({
-            configFile: 'karma.conf.js',
-            action: 'start',
-            singleRun: true,
-            browsers: ['PhantomJS']
-        }));
-});

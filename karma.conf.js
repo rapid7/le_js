@@ -68,4 +68,42 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false
   });
+// available browsers: https://saucelabs.com/platforms
+  var customLaunchers = {
+    sl_safari: {
+        base: 'SauceLabs',
+        browserName: 'safari',
+        platform:'OS X 10.9'
+    },
+    sl_firefox: {
+        base: 'SauceLabs',
+        browserName: 'firefox'
+    },
+    sl_ie_9: {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        version: '9'
+    },
+    sl_ie_11: {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        version: '11'
+    }
+  };
+
+  if (process.env.CI) {
+    config.set({
+        sauceLabs: {
+            username: process.env.SAUCELABS_USERNAME,
+            accessKey: process.env.SAUCELABS_ACCESSKEY,
+            testName: process.env.TRAVIS_JOB_NUMBER
+        },
+        recordScreenshots: false,
+        customLaunchers: customLaunchers,
+        browsers: ['sl_firefox', 'sl_ie_9', 'sl_ie_11', 'sl_safari', 'PhantomJS'],
+        reporters: ['saucelabs'],
+        colors: false,
+        singleRun: true
+    });
+  }
 };
