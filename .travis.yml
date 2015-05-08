@@ -1,16 +1,17 @@
 language: node_js
 node_js:
-  - 0.10
+- 0.1
 sudo: false
 deploy:
   provider: releases
   api_key:
     secure: S2JVfYhWj4b2DvjsPtJYqUrAUtC9Mwdc1kMkA+p/LeSYJOZL8gFq55YReAPI1pNKSTJxwnxdlbMb5gtxyItVj7vz23Inv5S1DwialwgTff3ZV1JOquT91BeHnvphjBdm5L8G65QI35xEu5d1AuFr+cv6q+ocGr/k70b56fnEPcs=
-  file: "product/le.min.js"
+  file: product/le.min.js
   skip_cleanup: true
   on:
     repo: logentries/le_js
     tags: true
 env:
   global:
-  - secure: iuucx9DZTvVM2RXyGQ1eR+qPpTx9bZuj4NpCvY1CC1e9oUyhWgEAC9kfy04a96fqFvJQ0tCNPzhzSQRJtEAQp0vmoA+1ss/nrh98LhjhkXHZ+4gbaqoQAL8jTai95XmedR6UKckZA1SH3K9yeergeW9+Sq6kKvbQHsYBYSmmq0g=
+  - secure: AToXqsiOsYiCigEK0bmNBVwgQQ5fKk6+hJWWSL/A+1v+tWaa3HC7+0p3Mscy1PBqX1PeYqD7GGUUpECUGUzqLjsbXhSZQ11ECKVk1qCw18dVxE/rxKVsvTA1Ie0xOwsQvqwkxfRAVgYwN3D3smDuZXLRvASMdUfwEPAq5BXZhc0=
+  - secure: Jk+2mrcxAzhnTtImz9hhDb/JLu4rCl2jR3KCZJUzH4OQMwYbWcy7BeZpnJFWgDoylohOTUQMpkpzLZfusbyDREJAgV+sSPEFYN1yOFIwM2t1RL1Ajl1m/eCsYWuHYcLXcRutMqVRrMW+6olA8GjUHPr/vK0gTNrZfBVXvtJL6BE=
