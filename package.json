@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "karma start karma.conf-ci.js; jshint src/ test/leSpec.js",
+    "test": "karma start karma.conf-ci.js",
     "build": "gulp build",
     "localtest": "karma start; jshint src/ test/leSpec.js"
   },
