@@ -1,8 +1,20 @@
-// Karma configuration
-// Generated on Fri Apr 04 2014 16:41:37 GMT+0100 (IST)
-/*jslint node:true*/
+var fs = require('fs');
 
 module.exports = function(config) {
+
+  // Browsers to run on Sauce Labs
+  var customLaunchers = {
+    'SL_Chrome': {
+      base: 'SauceLabs',
+      browserName: 'chrome'
+    },
+    'SL_Firefox': {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      version: '11'
+    }
+  };
+
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -11,61 +23,42 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'sinon'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      // Source files
       'src/*.js',
-      // Specs
-      'test/*Spec.js'
+      'test/*.js'
     ],
-
-
-    // list of files to exclude
-    exclude: [
-
-    ],
-
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-
-    },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['dots', 'saucelabs'],
 
 
     // web server port
     port: 9876,
 
-
-    // enable / disable colors in the output (reporters and logs)
     colors: true,
-
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
+    sauceLabs: {
+        username: process.env.SAUCELABS_USERNAME,
+        accessKey: process.env.SAUCELABS_ACCESSKEY,
+        testName: process.env.TRAVIS_JOB_NUMBER
+    },
+    captureTimeout: 120000,
+    customLaunchers: customLaunchers,
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-
-
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    browsers: Object.keys(customLaunchers),
+    singleRun: true
   });
 };
