@@ -8,15 +8,9 @@ module.exports = function(config) {
       base: 'SauceLabs',
       browserName: 'chrome'
     },
-    'SL_IE': {
+    'SL_Firefox' : {
       base: 'SauceLabs',
-      browserName: 'internet explorer',
-      version: '10'
-    },
-    'SL_IE': {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      version: '11'
+      browserName: 'firefox'
     }
   };
 
