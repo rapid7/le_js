@@ -6,7 +6,7 @@ module.exports = function(config) {
   var customLaunchers = {
     'SL_Chrome': {
       base: 'SauceLabs',
-      browserName: 'chrome'
+      browserName: 'Chrome'
     }
   };
 
