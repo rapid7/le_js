@@ -269,6 +269,11 @@
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'text/json');
                 }
+                
+                if (request.overrideMimeType) {
+                    request.overrideMimeType('text');
+                }
+
                 request.send(data);
             }
         };
