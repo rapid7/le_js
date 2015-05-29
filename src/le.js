@@ -267,7 +267,7 @@
                 request.open("POST", uri, true);
                 if (request.constructor === XMLHttpRequest) {
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    request.setRequestHeader('Content-type', 'text/json');
+                    request.setRequestHeader('Content-type', 'application/json');
                 }
                 
                 if (request.overrideMimeType) {
