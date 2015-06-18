@@ -28,8 +28,26 @@
         // Browser globals (root is window)
         root.LE = factory(root);
     }
-}(this, function(window) {
+}(this, function (window) {
     "use strict";
+    // cross-browser indexOf fix
+    var _indexOf = function (array, obj) {
+        for (var i = 0; i < array.length; i++) {
+            if (obj === array[i]) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    // Obtain a browser-specific XHR object
+    var _getAjaxObject = function () {
+        if (typeof XDomainRequest !== "undefined") {
+            // We're using IE8/9
+            return new XDomainRequest();
+        }
+        return new XMLHttpRequest();
+    };
 
     /**
      * A single log event stream.
@@ -40,28 +58,13 @@
         /**
          * @const
          * @type {string} */
-        var _traceCode = (Math.random() + Math.PI).toString(36).substring(2, 10);
-        /** @type {boolean} */
-        var _doTrace = options.trace;
+        var _traceCode = options.trace ? (Math.random() + Math.PI).toString(36).substring(2, 10) : null;
         /** @type {string} */
         var _pageInfo = options.page_info;
         /** @type {string} */
         var _token = options.token;
         /** @type {boolean} */
         var _print = options.print;
-        /**
-         * @type {string} */
-        var _endpoint;
-        if (window.LEENDPOINT) {
-            _endpoint = window.LEENDPOINT;
-        } else {
-            _endpoint = "js.logentries.com/v1";
-        }
-
-        /**
-         * Flag to prevent further invocations on network err
-         ** @type {boolean} */
-        var _shouldCall = true;
         /** @type {boolean} */
         var _SSL = function() {
             if (typeof XDomainRequest === "undefined") {
@@ -71,6 +74,19 @@
             // must adhere to the page's encryption scheme.
             return window.location.protocol === "https:" ? true : false;
         }();
+        /** @type {string} */
+        var _endpoint;
+        if (window.LEENDPOINT) {
+            _endpoint = window.LEENDPOINT;
+        } else {
+            _endpoint = "js.logentries.com/v1";
+        }
+        _endpoint = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
+
+        /**
+         * Flag to prevent further invocations on network err
+         ** @type {boolean} */
+        var _shouldCall = true;
         /** @type {Array.<string>} */
         var _backlog = [];
         /** @type {boolean} */
@@ -148,8 +164,7 @@
                 }
             }
 
-            // Add trace code if required
-            if (_doTrace) {
+            if (_traceCode) {
                 data.trace = _traceCode;
             }
 
@@ -175,15 +190,6 @@
                         var cache = [];
                         var serialized = JSON.stringify(data, function(key, value) {
 
-                          // cross-browser indexOf fix
-                          var _indexOf = function(array, obj) {
-                            for (var i = 0; i < array.length; i++) {
-                              if (obj === array[i]) {
-                                return i;
-                              }
-                            }
-                            return -1;
-                          };
                               if (typeof value === "undefined") {
                                 return "undefined";
                               } else if (typeof value === "object" && value !== null) {
@@ -212,15 +218,6 @@
 
         var _apiCall = function(token, data) {
             _active = true;
-
-            // Obtain a browser-specific XHR object
-            var _getAjaxObject = function() {
-              if (typeof XDomainRequest !== "undefined") {
-                // We're using IE8/9
-                return new XDomainRequest();
-              }
-              return new XMLHttpRequest();
-            };
 
             var request = _getAjaxObject();
 
@@ -263,12 +260,16 @@
                   };
                 }
 
-                var uri = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;
-                request.open("POST", uri, true);
+                request.open("POST", _endpoint, true);
                 if (request.constructor === XMLHttpRequest) {
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    request.setRequestHeader('Content-type', 'text/json');
+                    request.setRequestHeader('Content-type', 'application/json');
                 }
+                
+                if (request.overrideMimeType) {
+                    request.overrideMimeType('text');
+                }
+
                 request.send(data);
             }
         };
