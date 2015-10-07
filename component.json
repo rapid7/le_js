@@ -2,7 +2,7 @@
   "name": "le_js",
   "repo": "logentries/le_js",
   "description": "CLient-side JavaScript logging library for Logentries",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "keywords": [],
   "dependencies": {},
   "development": {},
