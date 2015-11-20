@@ -28,7 +28,7 @@
         // Browser globals (root is window)
         root.LE = factory(root);
     }
-}(this, function (window) {
+}(typeof window === 'undefined' ? this : window, function (window) {
     "use strict";
     // cross-browser indexOf fix
     var _indexOf = function (array, obj) {
