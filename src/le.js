@@ -11,7 +11,7 @@
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(function() {
-            return factory(root);
+            return factory();
         });
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
@@ -23,12 +23,12 @@
             // adds support for Browserify.
             root = global;
         }
-        module.exports = factory(root);
+        module.exports = factory();
     } else {
         // Browser globals (root is window)
-        root.LE = factory(root);
+        root.LE = factory();
     }
-}(this, function (window) {
+}(this, function () {
     "use strict";
     // cross-browser indexOf fix
     var _indexOf = function (array, obj) {
@@ -265,7 +265,7 @@
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'application/json');
                 }
-                
+
                 if (request.overrideMimeType) {
                     request.overrideMimeType('text');
                 }
