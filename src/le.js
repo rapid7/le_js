@@ -1,5 +1,5 @@
 /**
- * @license Copyright 2013 Logentries.
+ * @license Copyright 2015 Logentries.
  * Please view license at https://raw.github.com/logentries/le_js/master/LICENSE
  */
 
