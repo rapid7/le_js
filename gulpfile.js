@@ -12,6 +12,7 @@ var testFiles = [
 ];
 var apiVersion = 1;
 var apiEndpoint = 'js.logentries.com/v' + apiVersion;
+var webhookEndpoint = 'webhook.logentries.com/noformat';
 
 
 gulp.task('default', ['test', 'build']);
@@ -26,6 +27,7 @@ gulp.task('build', function() {
     return gulp.src('src/le.js')
         .pipe(concat('le.js')) // We've only got one file but still need this
         .pipe(replace(/localhost:8080\/v1/g, apiEndpoint))
+        .pipe(replace(/localhost:8080\/noformat/g, webhookEndpoint))
         .pipe(gulp.dest('product'))
         .pipe(closureCompiler({
             compilation_level: 'SIMPLE_OPTIMIZATIONS',

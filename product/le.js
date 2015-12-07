@@ -66,6 +66,8 @@
         /** @type {boolean} */
         var _print = options.print;
         /** @type {boolean} */
+        var _noFormat = options.no_format;
+        /** @type {boolean} */
         var _SSL = function() {
             if (typeof XDomainRequest === "undefined") {
                 return options.ssl;
@@ -78,7 +80,10 @@
         var _endpoint;
         if (window.LEENDPOINT) {
             _endpoint = window.LEENDPOINT;
-        } else {
+        } else if (_noFormat) {
+            _endpoint = "webhook.logentries.com/noformat";
+        }
+        else {
             _endpoint = "js.logentries.com/v1";
         }
         _endpoint = (_SSL ? "https://" : "http://") + _endpoint + "/logs/" + _token;

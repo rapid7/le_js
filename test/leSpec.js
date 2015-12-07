@@ -331,16 +331,46 @@ describe('destroys log streams', function () {
                 name: 'test'
             });
         }).not.toThrow();
+        LE.destroy('test');
     });
 
     afterEach(destroy);
 });
 
+describe('no_format option', function () {
+    beforeEach(mockXMLHttpRequests);
+    beforeEach(addGetJson);
+
+    it('Should send data to noformat if no format is enabled', function () {
+        LE.init({
+            token: TOKEN,
+            no_format: true
+        });
+        LE.log('some message');
+        var url = this.requestList[0].url;
+        expect(url).toContain("noformat");
+    });
+
+    it('Should send data to js if no format is disabled', function () {
+        LE.init({
+            token: TOKEN,
+            no_format: false
+        });
+        LE.log('some message');
+        var url = this.requestList[0].url;
+        expect(url).toContain("v1");
+    });
+
+    afterEach(restoreXMLHttpRequests);
+    afterEach(destroy);
+});
+
+
 describe('custom endpoint', function () {
     beforeEach(mockXMLHttpRequests);
     beforeEach(addGetJson);
     beforeEach(function () {
-        window.LEENDPOINT = 'somwhere.com/custom-logging';
+        window.LEENDPOINT = 'somewhere1.com/custom-logging';
         LE.init({
             token: TOKEN
         });
@@ -348,9 +378,9 @@ describe('custom endpoint', function () {
 
     it('can be set', function () {
         LE.log('some message');
-        var lastReq = this.requestList[1]; //no idea why its sending two messages
+        var lastReq = this.requestList[0];
 
-        expect(lastReq.url).toBe('https://somwhere.com/custom-logging/logs/test_token');
+        expect(lastReq.url).toBe('https://somewhere1.com/custom-logging/logs/test_token');
     });
 
     afterEach(restoreXMLHttpRequests);
@@ -364,7 +394,6 @@ describe('print option', function () {
         spyOn(console, 'info');
         spyOn(console, 'warn');
         spyOn(console, 'error');
-        window.LEENDPOINT = 'somwhere.com/custom-logging';
         LE.init({
             token: TOKEN,
             print: true
