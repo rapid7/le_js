@@ -4,7 +4,7 @@
  */
 
 /*jslint browser:true*/
-/*global define, module, exports, console, global */
+/*global define, module, exports, console, global, JSON */
 
 /** @param {Object} window */
 (function (root, factory) {
@@ -270,7 +270,7 @@
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'application/json');
                 }
-                
+
                 if (request.overrideMimeType) {
                     request.overrideMimeType('text');
                 }
