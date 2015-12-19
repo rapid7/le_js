@@ -1,5 +1,5 @@
 /*jshint loopfunc:true*/
-/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window, console, spyOn, XDomainRequest, XMLHttpRequest, JSON*/
+/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window, console, navigator, spyOn, XDomainRequest, XMLHttpRequest, JSON*/
 var GLOBAL = this;
 var TOKEN = 'test_token';
 var FILENAME = 'leSpec.js';
