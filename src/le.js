@@ -197,6 +197,12 @@
 
                               if (typeof value === "undefined") {
                                 return "undefined";
+                              } else if (value instanceof Error) {
+                                return {
+                                    name: value.name,
+                                    message: value.message,
+                                    stack: value.stack
+                                };
                               } else if (typeof value === "object" && value !== null) {
                                 if (_indexOf(cache, value) !== -1) {
                                   // We've seen this object before;
