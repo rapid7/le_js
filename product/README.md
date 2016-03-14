@@ -8,6 +8,6 @@ Contents
 
 Several files are produced in the build. You'll probably just want to use __le.min.js__, however.
 
-* __le.ls__: JS client library, unminified
+* __le.js__: JS client library, unminified
 * __le.min.js__: JS client library, minified
 * __le.dyn.js__: JS client library with dyn.js compatibility
