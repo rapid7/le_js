@@ -116,6 +116,7 @@
             var nav = window.navigator || {doNotTrack: undefined};
             var screen = window.screen || {};
             var location = window.location || {};
+            var doNotTrack = nav.doNotTrack || window.doNotTrack || nav.msDoNotTrack;
 
             return {
               url: location.pathname,
@@ -129,10 +130,9 @@
                 height: window.innerHeight
               },
               browser: {
-                name: nav.appName,
-                version: nav.appVersion,
+                user_agent: nav.userAgent,
                 cookie_enabled: nav.cookieEnabled,
-                do_not_track: nav.doNotTrack
+                do_not_track: doNotTrack
               },
               platform: nav.platform
             };
