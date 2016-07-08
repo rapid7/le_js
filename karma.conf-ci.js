@@ -46,7 +46,9 @@ module.exports = function(config) {
     sauceLabs: {
         username: process.env.SAUCELABS_USERNAME,
         accessKey: process.env.SAUCELABS_ACCESSKEY,
-        testName: process.env.TRAVIS_JOB_NUMBER
+        testName: process.env.TRAVIS_JOB_NUMBER,
+        startConnect: false,
+        tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
