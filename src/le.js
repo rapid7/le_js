@@ -130,6 +130,7 @@
               },
               browser: {
                 name: nav.appName,
+                user_agent: nav.userAgent,
                 version: nav.appVersion,
                 cookie_enabled: nav.cookieEnabled,
                 do_not_track: nav.doNotTrack
