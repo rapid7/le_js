@@ -22,8 +22,8 @@
   },
   "homepage": "https://logentries.com",
   "devDependencies": {
+    "google-closure-compiler": "^20161024.2.0",
     "gulp": "^3.6.2",
-    "gulp-closure-compiler": "^0.1.2",
     "gulp-concat": "^2.2.0",
     "gulp-karma": "^0.0.4",
     "gulp-rename": "^1.2.0",
