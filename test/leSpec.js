@@ -1,7 +1,8 @@
 /*jshint loopfunc:true*/
-/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window, console, spyOn, XDomainRequest, XMLHttpRequest*/
+/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window, console, navigator, spyOn, XDomainRequest, XMLHttpRequest, JSON*/
 var GLOBAL = this;
 var TOKEN = 'test_token';
+var FILENAME = 'leSpec.js';
 
 function destroy() {
     LE.destroy('default');
@@ -91,6 +92,19 @@ describe('sending messages', function () {
         var event = this.getXhrJson(0).event;
         expect(event.undef).toBe('undefined');
         expect(event.nullVal).toBe(null);
+    });
+
+    it('logs Error object', function () {
+        LE.error(new Error('I am an error'));
+
+        var event = this.getXhrJson(0).event;
+
+        expect(event.message).toEqual('I am an error');
+        expect(event.name).toEqual('Error');
+
+        if (!navigator.appVersion.match(/PhantomJS/)) {
+          expect(event.stack).toMatch(FILENAME);
+        }
     });
 
     it('logs array with nullish values', function () {

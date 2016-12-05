@@ -4,7 +4,7 @@
  */
 
 /*jslint browser:true*/
-/*global define, module, exports, console, global */
+/*global define, module, exports, console, global, JSON */
 
 /** @param {Object} window */
 (function (root, factory) {
@@ -198,6 +198,12 @@
 
                               if (typeof value === "undefined") {
                                 return "undefined";
+                              } else if (value instanceof Error) {
+                                return {
+                                    name: value.name,
+                                    message: value.message,
+                                    stack: value.stack
+                                };
                               } else if (typeof value === "object" && value !== null) {
                                 if (_indexOf(cache, value) !== -1) {
                                   // We've seen this object before;
@@ -271,7 +277,7 @@
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'application/json');
                 }
-                
+
                 if (request.overrideMimeType) {
                     request.overrideMimeType('text');
                 }
