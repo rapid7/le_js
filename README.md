@@ -20,3 +20,8 @@ Quick start
 Start [here](https://github.com/logentries/le_js/wiki/Getting-started), then check out the rest of the wiki.
 
 Don't have an account? Get one [for free](https://logentries.com/quick-start/).
+
+Contact Support
+-----------
+
+Please email our support team at support@logentries.com if you need any help.
