@@ -47,13 +47,13 @@ describe('construction', function () {
 
     describe('fails', function () {
         it('without token', function () {
-            expect(LE.init).toThrow("Invalid parameters for init()");
+            expect(LE.init).toThrow(new Error("Invalid parameters for init()"));
         });
 
         it('without token (object)', function () {
             expect(function () {
                 LE.init({});
-            }).toThrow("Token not present.");
+            }).toThrow(new Error("Token not present."));
         });
     });
 
@@ -253,10 +253,11 @@ describe('sending user agent data', function () {
 });
 
 describe('catch all option', function () {
+    var originalErrorHandler = GLOBAL.onerror;
+
     beforeEach(mockXMLHttpRequests);
     beforeEach(function () {
-        this.oldErrorHandler = sinon.stub(GLOBAL, 'onerror')
-            .returns(true);
+        GLOBAL.onerror = this.stubErrorHandler = sinon.stub().returns(true);
     });
 
     it('assigns onerror handler', function () {
@@ -266,7 +267,7 @@ describe('catch all option', function () {
         });
         // Don't test if onerror is set because #1 we've got a stub
         // and 2nd, karma has its handler.
-        expect(GLOBAL.onerror).not.toBe(this.oldErrorHandler);
+        expect(originalErrorHandler).not.toBe(GLOBAL.onerror);
     });
 
     it('sends errors', function () {
@@ -277,7 +278,7 @@ describe('catch all option', function () {
         });
 
         // Check if onerror handler is not the stub from above
-        expect(GLOBAL.onerror).not.toBe(this.oldErrorHandler);
+        expect(originalErrorHandler).not.toBe(GLOBAL.onerror);
 
         expect(this.requestList.length).toBe(0);
 
@@ -296,13 +297,15 @@ describe('catch all option', function () {
         // Pretend to trigger an error like the browser might
         GLOBAL.onerror('Script error', 'http://example.com', 0);
 
-        expect(this.oldErrorHandler.calledOnce).toBe(true);
+        expect(this.stubErrorHandler.calledOnce).toBe(true);
     });
 
     afterEach(function () {
-        if (this.oldErrorHandler.restore) {
-            this.oldErrorHandler.restore();
+        if (GLOBAL.onerror.restore) {
+            GLOBAL.onerror.restore();
         }
+        GLOBAL.onerror = originalErrorHandler;
+        this.stubErrorHandler = null;
     });
     afterEach(restoreXMLHttpRequests);
     afterEach(destroy);
@@ -402,9 +405,9 @@ describe('print option', function () {
 
     it('should log to console also', function () {
         LE.log('some message');
-        expect(console.log.mostRecentCall.args[0].trace).toMatch(/[0-9a-z]{8}/);
-        expect(console.log.mostRecentCall.args[0].event).toEqual('some message');
-        expect(console.log.mostRecentCall.args[0].level).toEqual('LOG');
+        expect(console.log.calls.mostRecent().args[0].trace).toMatch(/[0-9a-z]{8}/);
+        expect(console.log.calls.mostRecent().args[0].event).toEqual('some message');
+        expect(console.log.calls.mostRecent().args[0].level).toEqual('LOG');
     });
 
     it('below IE9 should stringify console messages', function () {
@@ -412,7 +415,7 @@ describe('print option', function () {
         XDomainRequest = XMLHttpRequest; //trick into thinking we are in IE8/9 browser
         /*jshint +W020 */
         LE.log('some message');
-        expect(console.log.mostRecentCall.args[0]).toMatch(/[0-9a-z]{8} some message/);
+        expect(console.log.calls.mostRecent().args[0]).toMatch(/[0-9a-z]{8} some message/);
     });
 
     afterEach(restoreXMLHttpRequests);
