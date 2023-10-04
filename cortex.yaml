@@ -1,0 +1,15 @@
+---
+info:
+  title: Le Js
+  description: Client-side JavaScript logging library for Logentries
+  x-cortex-git:
+    github:
+      alias: r7org
+      repository: rapid7/le_js
+  x-cortex-tag: le-js
+  x-cortex-type: service
+  x-cortex-domain-parents:
+  - tag: insightidr
+openapi: 3.0.1
+servers:
+- url: "/"
