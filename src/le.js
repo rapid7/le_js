@@ -4,7 +4,7 @@
  */
 
 /*jslint browser:true*/
-/*global define, module, exports, console, global */
+/*global define, module, exports, console, global, JSON */
 
 /** @param {Object} window */
 (function (root, factory) {
@@ -101,10 +101,10 @@
 
         if (options.catchall) {
             var oldHandler = window.onerror;
-            var newHandler = function(msg, url, line) {
-                _rawLog({error: msg, line: line, location: url}).level('ERROR').send();
+            var newHandler = function(msg, url, line, column, error) {
+                _rawLog({error: msg, line: line, column: column, location: url}).level('ERROR').send();
                 if (oldHandler) {
-                    return oldHandler(msg, url, line);
+                    return oldHandler(msg, url, line, column, error);
                 } else {
                     return false;
                 }
@@ -271,7 +271,7 @@
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'application/json');
                 }
-                
+
                 if (request.overrideMimeType) {
                     request.overrideMimeType('text');
                 }

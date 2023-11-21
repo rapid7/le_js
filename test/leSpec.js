@@ -1,5 +1,5 @@
 /*jshint loopfunc:true*/
-/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window, console, spyOn, XDomainRequest, XMLHttpRequest*/
+/*globals describe, it, expect, LE, sinon, afterEach, beforeEach, jasmine, window, console, spyOn, XDomainRequest, XMLHttpRequest, JSON*/
 var GLOBAL = this;
 var TOKEN = 'test_token';
 

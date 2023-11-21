@@ -9,6 +9,7 @@
   "scripts": {
     "test": "karma start karma.conf-ci.js",
     "build": "gulp build",
+    "localchrome": "karma start --single-run --browsers Chrome",
     "localtest": "karma start; jshint src/ test/leSpec.js"
   },
   "repository": {
@@ -30,6 +31,7 @@
     "gulp-replace": "^0.2.0",
     "jshint": "^2.5.10",
     "karma": "^0.12.16",
+    "karma-chrome-launcher": "^2.0.0",
     "karma-cli": "0.0.4",
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4",
