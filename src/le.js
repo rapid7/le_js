@@ -74,7 +74,7 @@
             }
             // If we're relying on XDomainRequest, we
             // must adhere to the page's encryption scheme.
-            return window.location.protocol === "https:" ? true : false;
+            return location.protocol === "https:" ? true : false;
         }();
         /** @type {string} */
         var _endpoint;
@@ -271,7 +271,7 @@
                     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request.setRequestHeader('Content-type', 'application/json');
                 }
-                
+
                 if (request.overrideMimeType) {
                     request.overrideMimeType('text');
                 }
