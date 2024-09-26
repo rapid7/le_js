@@ -116,9 +116,11 @@
             var nav = window.navigator || {doNotTrack: undefined};
             var screen = window.screen || {};
             var location = window.location || {};
+            var search = location.search ? ('?' + location.search) : '';
+            var hash = location.hash ? ('#' + location.hash) : '';
 
             return {
-              url: location.pathname,
+              url: location.pathname + search + hash,
               referrer: document.referrer,
               screen: {
                 width: screen.width,
@@ -130,6 +132,7 @@
               },
               browser: {
                 name: nav.appName,
+                user_agent: nav.userAgent,
                 version: nav.appVersion,
                 cookie_enabled: nav.cookieEnabled,
                 do_not_track: nav.doNotTrack
